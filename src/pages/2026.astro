@@ -23,7 +23,7 @@ const facts = [
   <PageHeader
     kicker="Archive · 2026"
     title="2026 首届新春会"
-    lede="第一届新春会于 2026 年除夕上线，全长 3 小时 59 分，在 B 站获得 24.2 万播放。本页归档正片、官方预告与可考的单品作品，全部可直接跳转到 B 站观看。"
+    lede={`第一届新春会于 2026 年除夕上线，全长 ${durationText(ARCHIVE_STATS.featureDuration)}，在 B 站获得 ${views(ARCHIVE_STATS.featureViews)}播放。本页归档正片、官方预告与可考的单品作品，全部可直接跳转到 B 站观看。`}
     facts={facts}
     mark="ceremony-2026"
     texture="asanoha"

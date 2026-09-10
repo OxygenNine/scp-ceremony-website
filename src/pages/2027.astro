@@ -1,17 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import PvHero from '../components/PvHero.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Countdown from '../components/Countdown.astro';
 import Timeline from '../components/Timeline.astro';
 import BrandMark from '../components/BrandMark.astro';
 import { Lock, ArrowRight, Users, CircleDot } from '@lucide/astro';
-import { CEREMONY_PREMIERE, SUBMISSION_DEADLINE, LINKS } from '../data/site';
+import { CEREMONY_PREMIERE, REGISTRATION_DEADLINE, SUBMISSION_DEADLINE, LINKS } from '../data/site';
 import { TEAM, MASCOT, PRODUCTION } from '../data/team';
 
 const facts = [
   { label: '首播日期', value: '2027.02.05' },
-  { label: '投稿截稿', value: '2027.01.01' },
+  { label: '报名截止', value: '2026.10.31' },
+  { label: '交稿截止', value: '2027.01.01' },
   { label: '计划收录', value: `${PRODUCTION.programTarget} 个` },
   { label: '审核组规模', value: PRODUCTION.reviewers },
 ];
@@ -55,6 +57,8 @@ const pending = [
     texture="hexagons"
   />
 
+  <PvHero />
+
   <div class="shell">
     <!-- 01 倒计时与观看地址 -->
     <section class="section">
@@ -88,6 +92,21 @@ const pending = [
           label="距离 2027 新春会首播"
           doneLabel="2027 新春会已发布"
         />
+
+        <div class="watch__deadlines">
+          <Countdown
+            variant="compact"
+            target={REGISTRATION_DEADLINE}
+            label="报名截止 · 2026.10.31 23:59"
+            doneLabel="报名已截止"
+          />
+          <Countdown
+            variant="compact"
+            target={SUBMISSION_DEADLINE}
+            label="交稿截止 · 2027.01.01 00:00"
+            doneLabel="交稿已截止"
+          />
+        </div>
       </div>
     </section>
 
@@ -97,13 +116,14 @@ const pending = [
         index="02"
         kicker="Timeline"
         title="完整时间轴"
-        note="企划书确定的六个节点。标注「截止」的一项需要投稿者特别留意。"
+        note="企划书确定的公开节点。报名与交稿是两个独立的截止点，都标注为「截止」。"
       />
       <Timeline />
       <p class="callout">
         <CircleDot size={15} stroke-width={1.8} />
         <span>
-          作品须在 <strong class="tnum">2027 年 1 月 1 日 00:00</strong> 前完成上传，逾期不候。如需申请额外时长或因特殊情况延期，请在 QQ
+          报名登记截止 <strong class="tnum">2026 年 10 月 31 日 23:59</strong>；作品上传截止
+          <strong class="tnum">2027 年 1 月 1 日 00:00</strong>，逾期不候。如需申请额外时长或因特殊情况延期，请在 QQ
           群内联系主办方单独沟通。
         </span>
       </p>
@@ -122,12 +142,29 @@ const pending = [
         {
           TEAM.map((m) => (
             <li class="team__row">
-              <span class="team__role">{m.role}</span>
+              <span class="team__roles">
+                {m.roles.map((r) => (
+                  <span class="team__role">{r.name}</span>
+                ))}
+              </span>
               <span class="team__name">
                 {m.handle}
                 <span class="team__alias">{m.alias}</span>
               </span>
-              <span class="team__detail">{m.detail}</span>
+              <span class="team__detail">
+                {m.roles.length === 1 ? (
+                  m.roles[0].detail
+                ) : (
+                  <span class="team__detailList">
+                    {m.roles.map((r) => (
+                      <span class="team__detailItem">
+                        <span class="team__detailRole">{r.name}</span>
+                        {r.detail}
+                      </span>
+                    ))}
+                  </span>
+                )}
+              </span>
             </li>
           ))
         }
@@ -240,6 +277,13 @@ const pending = [
     gap: 18px;
   }
 
+  /* 两个次级截止点：并列，但明显弱于上方的主倒计时 */
+  .watch__deadlines {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
   /* 占位卡：虚线框 + 明显区别于已上线内容 */
   .slot {
     position: relative;
@@ -338,6 +382,12 @@ const pending = [
     background: var(--surface);
   }
 
+  .team__roles {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
   .team__role {
     font-size: 0.76rem;
     letter-spacing: 0.12em;
@@ -362,6 +412,25 @@ const pending = [
     font-size: var(--step-small);
     color: var(--fg-2);
     line-height: 1.85;
+  }
+
+  /* 一人多岗时，说明按岗位分行并标出岗位名 */
+  .team__detailList {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .team__detailItem {
+    display: block;
+  }
+
+  .team__detailRole {
+    display: inline-block;
+    margin-right: 9px;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--gold-lo);
   }
 
   /* ---- 规模与设定 ---- */
@@ -543,6 +612,12 @@ const pending = [
     .team__row {
       grid-template-columns: 1fr;
       gap: 6px;
+    }
+  }
+
+  @media (max-width: 430px) {
+    .watch__deadlines {
+      grid-template-columns: 1fr;
     }
   }
 </style>

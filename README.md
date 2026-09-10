@@ -33,6 +33,7 @@ src/
   styles/          tokens.css + base.css + layout.css
 public/
   covers/          2026 相关视频封面（已压缩，3.3 MB → 0.6 MB）
+  images/          2027 宣传 PV 封面（1920 / 960 两档）
   favicon.svg
 ```
 
@@ -51,8 +52,14 @@ public/
 **发布新公告时需要改的几处：**
 
 - 首播时刻：`src/data/site.ts` 的 `CEREMONY_PREMIERE`（当前按 20:00 预置，企划书只写定日期）
+- 报名 / 交稿截止：`src/data/site.ts` 的 `REGISTRATION_DEADLINE` / `SUBMISSION_DEADLINE`
+  （**两者是独立节点**：先登记报名，后交稿）
+- 宣传 PV：`src/data/site.ts` 的 `PV`（BVID、封面路径、首播时刻）
 - 时间轴节点：`src/data/schedule.ts` 的 `MILESTONES`；节点状态由 `statusOf()` 按当前日期自动推导，无需手改
 - 观看地址：`src/pages/2027.astro` 顶部的 `slots` 数组，占位卡替换为真实链接即可
+
+**数字不要手写。** 播放量、时长这类会变的值走 `src/lib/format.ts` 的 `views()` / `durationText()`，
+散落在文案里的硬编码数字迟早和统计卡对不上。
 
 ## 内容边界
 

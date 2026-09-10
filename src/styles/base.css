@@ -135,7 +135,7 @@ p {
   border-color: var(--line-3);
 }
 
-/* 带箭头的行动链接：只有箭头位移 2px */
+/* 带箭头的行动链接：只有箭头向正右方位移 3px */
 .golink {
   display: inline-flex;
   align-items: center;
@@ -155,7 +155,7 @@ p {
 }
 
 .golink:hover svg {
-  transform: translate(2px, -2px);
+  transform: translateX(3px);
 }
 
 /* ==========================================================================

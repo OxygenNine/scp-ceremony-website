@@ -6,6 +6,8 @@
 
 export type Milestone = {
   date: string;
+  /** 区间节点的起始日（如问卷征集）。缺省时视为单日事件。 */
+  from?: string;
   /** 展示用日期 */
   label: string;
   title: string;
@@ -34,15 +36,24 @@ export const MILESTONES: Milestone[] = [
   },
   {
     date: '2026-09-14',
+    from: '2026-09-11',
     label: '2026.09.11 – 09.14',
     title: '问卷征集期',
     detail: '四天窗口，问卷结束后进入正式的节目共创阶段。',
     phase: 'prep',
   },
   {
+    date: '2026-10-31',
+    label: '2026.10.31',
+    title: '报名截止',
+    detail: '共创表格的登记窗口于 10 月 31 日 23:59 关闭。报名后仍有一个多月时间完成作品。',
+    phase: 'submit',
+    deadline: true,
+  },
+  {
     date: '2027-01-01',
     label: '2027.01.01',
-    title: '截稿',
+    title: '交稿截止',
     detail: '所有作品须于 2027 年 1 月 1 日 00:00 前完成上传，逾期不候。',
     phase: 'submit',
     deadline: true,
@@ -72,9 +83,11 @@ export const MILESTONES: Milestone[] = [
 
 /** 按当前时间推导节点状态：done / current / upcoming */
 export function statusOf(m: Milestone, now = new Date()): 'done' | 'current' | 'upcoming' {
-  const d = new Date(m.date + 'T00:00:00+08:00');
-  const day = 86400000;
-  if (now.getTime() >= d.getTime() + 2 * day) return 'done';
-  if (now.getTime() >= d.getTime()) return 'current';
+  const start = new Date((m.from ?? m.date) + 'T00:00:00+08:00').getTime();
+  // 当日 23:59:59 之前都算进行中，之后算已完成
+  const end = new Date(m.date + 'T23:59:59+08:00').getTime();
+  const t = now.getTime();
+  if (t > end) return 'done';
+  if (t >= start) return 'current';
   return 'upcoming';
 }

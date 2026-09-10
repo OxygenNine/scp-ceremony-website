@@ -3,7 +3,7 @@ import { ArrowRight, MonitorPlay } from '@lucide/astro';
 import BrandMark from './BrandMark.astro';
 import Countdown from './Countdown.astro';
 import seigaiha from '../assets/patterns/seigaiha.svg?raw';
-import { SITE, LINKS, CEREMONY_PREMIERE } from '../data/site';
+import { SITE, LINKS, CEREMONY_PREMIERE, REGISTRATION_DEADLINE, SUBMISSION_DEADLINE } from '../data/site';
 
 interface Props {
   eyebrow: string;
@@ -57,6 +57,21 @@ const { eyebrow, lede, primaryHref, primaryLabel, secondaryHref, secondaryLabel 
     </div>
 
     <Countdown target={CEREMONY_PREMIERE} label="距离 2027 新春会首播" doneLabel="2027 新春会已上线" />
+
+    <div class="hero__deadlines" data-deadlines>
+      <Countdown
+        variant="compact"
+        target={REGISTRATION_DEADLINE}
+        label="报名截止 · 2026.10.31 23:59"
+        doneLabel="报名已截止"
+      />
+      <Countdown
+        variant="compact"
+        target={SUBMISSION_DEADLINE}
+        label="交稿截止 · 2027.01.01 00:00"
+        doneLabel="交稿已截止"
+      />
+    </div>
   </div>
 </section>
 
@@ -69,12 +84,12 @@ const { eyebrow, lede, primaryHref, primaryLabel, secondaryHref, secondaryLabel 
     border-bottom: 1px solid var(--line);
   }
 
-  /* 纹样只作为极低存在感的肌理，向顶部淡出 */
+  /* 纹样只作为低存在感的肌理，向顶部淡出 */
   .hero .texture {
     color: var(--gold);
-    opacity: 0.03;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 60%, #000 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, #000 60%, #000 100%);
+    opacity: 0.07;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 55%, #000 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 55%, #000 100%);
   }
 
   .hero__shell {
@@ -111,7 +126,7 @@ const { eyebrow, lede, primaryHref, primaryLabel, secondaryHref, secondaryLabel 
 
   .hero__wordmark {
     width: clamp(260px, 40vw, 560px);
-    color: var(--gold);
+    color: var(--fg);
     margin-bottom: 26px;
   }
 
@@ -157,6 +172,14 @@ const { eyebrow, lede, primaryHref, primaryLabel, secondaryHref, secondaryLabel 
     letter-spacing: 0.22em;
   }
 
+  /* 两个次级截止点：彼此并列，但尺寸与位置都弱于上方的主倒计时 */
+  .hero__deadlines {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+
   @media (max-width: 880px) {
     .hero__grid {
       grid-template-columns: 1fr;
@@ -175,6 +198,13 @@ const { eyebrow, lede, primaryHref, primaryLabel, secondaryHref, secondaryLabel 
 
     .hero__wordmark {
       width: min(100%, 420px);
+    }
+  }
+
+  @media (max-width: 620px) {
+    .hero__deadlines {
+      grid-template-columns: 1fr;
+      gap: 10px;
     }
   }
 </style>

@@ -33,12 +33,12 @@ const toc = [
 
 <BaseLayout
   pageTitle="投稿参与"
-  description="SCP 基金会中文分部 2027 新春会投稿要求：报名流程、交付格式、内容红线、节目类型、时长与数量限制。截稿 2027 年 1 月 1 日 00:00。"
+  description="SCP 基金会中文分部 2027 新春会投稿要求：报名流程、交付格式、内容红线、节目类型、时长与数量限制。报名截止 2026 年 10 月 31 日，交稿截止 2027 年 1 月 1 日。"
 >
   <PageHeader
     kicker="Submission · 2027"
     title="投稿参与"
-    lede="以下要求逐条取自 2027 新春会企划书，未做扩张解释。投稿前请完整阅读一遍——尤其是「不被收录的情形」一节，历届被拒收的稿件大多踩在这几条上。"
+    lede="以下要求逐条取自 2027 新春会企划书，未做扩张解释。注意本节有两个独立的截止点——先报名登记，后交稿。投稿前请完整阅读一遍，尤其是「不被收录的情形」一节，历届被拒收的稿件大多踩在这几条上。"
     facts={facts}
     mark="ceremony-2027"
     texture="seigaiha"
@@ -161,12 +161,14 @@ const toc = [
         </article>
 
         <article class="contact__card">
-          <span class="micro">B 站</span>
-          <p class="contact__value">@{LINKS.bilibili.oxygenNine.name}</p>
-          <p class="contact__body">宣传视频、定档预告与最终正片的发布账号。私信不处理投稿事务。</p>
+          <span class="micro">B 站官号</span>
+          <p class="contact__value">@{LINKS.bilibili.official.name}</p>
+          <p class="contact__body">
+            宣传 PV、定档预告与最终正片的发布账号。私信不处理投稿事务，投稿相关问题请在 QQ 群内提出。
+          </p>
           <a
             class="btn"
-            href={LINKS.bilibili.oxygenNine.url}
+            href={LINKS.bilibili.official.url}
             target="_blank"
             rel="noopener noreferrer"
           >

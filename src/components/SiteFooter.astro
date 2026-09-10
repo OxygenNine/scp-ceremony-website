@@ -1,6 +1,6 @@
 ---
 import BrandMark from './BrandMark.astro';
-import { SITE, LINKS, NAV } from '../data/site';
+import { SITE, LINKS, NAV, PV } from '../data/site';
 ---
 
 <footer class="foot">
@@ -37,11 +37,11 @@ import { SITE, LINKS, NAV } from '../data/site';
           <li>
             <a
               class="link"
-              href={LINKS.bilibili.foundCeremony.url}
+              href={LINKS.bilibili.official.url}
               target="_blank"
               rel="noopener noreferrer"
             >
-              B 站 · @{LINKS.bilibili.foundCeremony.name}
+              B 站官号 · @{LINKS.bilibili.official.name}
             </a>
           </li>
           <li>
@@ -52,6 +52,11 @@ import { SITE, LINKS, NAV } from '../data/site';
               rel="noopener noreferrer"
             >
               B 站 · @{LINKS.bilibili.oxygenNine.name}
+            </a>
+          </li>
+          <li>
+            <a class="link" href={PV.url} target="_blank" rel="noopener noreferrer">
+              2027 宣传 PV
             </a>
           </li>
           <li>

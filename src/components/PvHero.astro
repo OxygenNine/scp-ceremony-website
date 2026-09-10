@@ -1,0 +1,148 @@
+---
+/**
+ * 2027 新春会宣传 PV 的全屏横幅。
+ * 封面为主办方提供的官方 PV 封面，已裁掉上下黑边并压缩（1920 / 960 两档）。
+ */
+import { Play, CalendarClock } from '@lucide/astro';
+import { PV } from '../data/site';
+
+const srcset = `${PV.coverSmall} 960w, ${PV.cover} 1920w`;
+---
+
+<section class="pv" aria-labelledby="pv-title">
+  <div class="pv__bg">
+    <img
+      class="pv__img"
+      src={PV.cover}
+      srcset={srcset}
+      sizes="100vw"
+      alt=""
+      width="1920"
+      height="1080"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+
+  <div class="pv__scrim" aria-hidden="true"></div>
+
+  <div class="shell pv__inner">
+    <div class="pv__text">
+      <span class="micro pv__kicker">宣传 PV · 已公开</span>
+      <h2 class="pv__title" id="pv-title">{PV.title}</h2>
+      <p class="pv__meta">
+        <CalendarClock size={14} stroke-width={1.6} />
+        <span>首播 <span class="tnum">{PV.publishedLabel}</span> · B 站</span>
+      </p>
+      <a class="pv__cta" href={PV.url} target="_blank" rel="noopener noreferrer">
+        <Play size={16} stroke-width={1.9} />
+        在 B 站观看
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pv {
+    position: relative;
+    min-height: min(100svh, 860px);
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+
+  .pv__bg {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* 压暗并去饱和，让封面落回站点配色，同时保证叠字可读 */
+  .pv__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 42%;
+    filter: brightness(0.8) saturate(0.92) contrast(1.04);
+  }
+
+  .pv__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      var(--bg) 0%,
+      rgba(14, 7, 9, 0.86) 22%,
+      rgba(14, 7, 9, 0.5) 44%,
+      rgba(14, 7, 9, 0) 72%
+    );
+  }
+
+  .pv__inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding-bottom: clamp(32px, 5vw, 64px);
+  }
+
+  .pv__text {
+    max-width: 46ch;
+  }
+
+  .pv__kicker {
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .pv__title {
+    font-size: clamp(1.7rem, 3.6vw, 2.9rem);
+    color: var(--fg);
+    margin-bottom: 16px;
+  }
+
+  .pv__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--step-small);
+    color: var(--fg-2);
+    letter-spacing: 0.04em;
+    margin-bottom: 22px;
+  }
+
+  .pv__meta :global(svg) {
+    color: var(--gold);
+    flex: 0 0 auto;
+  }
+
+  .pv__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    padding: 0.72em 1.45em;
+    border: 1px solid var(--line-3);
+    border-radius: var(--r-xs);
+    background: rgba(14, 7, 9, 0.55);
+    color: var(--gold-hi);
+    font-size: var(--step-small);
+    letter-spacing: 0.08em;
+    transition: background-color var(--t), border-color var(--t), color var(--t);
+  }
+
+  .pv__cta:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #14100a;
+  }
+
+  @media (max-width: 700px) {
+    .pv {
+      min-height: min(78svh, 560px);
+    }
+
+    .pv__meta {
+      margin-bottom: 20px;
+    }
+  }
+</style>

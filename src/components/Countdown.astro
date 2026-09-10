@@ -9,15 +9,22 @@ interface Props {
   /** 到达目标后的文案 */
   doneLabel?: string;
   label?: string;
+  /** compact = 弱化版，用于与主倒计时并列的次级截止点 */
+  variant?: 'default' | 'compact';
 }
 
-const { target, doneLabel = '已发布', label = '距离首播' } = Astro.props;
+const { target, doneLabel = '已发布', label = '距离首播', variant = 'default' } = Astro.props;
 const y = target.slice(0, 4);
 const mo = target.slice(5, 7);
 const d = target.slice(8, 10);
 ---
 
-<div class="cd" data-countdown data-target={target} data-done={doneLabel}>
+<div
+  class:list={['cd', variant === 'compact' && 'cd--compact']}
+  data-countdown
+  data-target={target}
+  data-done={doneLabel}
+>
   <span class="cd__label micro">{label}</span>
 
   <div class="cd__row" role="timer" aria-live="off">
@@ -149,6 +156,43 @@ const d = target.slice(8, 10);
     color: var(--fg-3);
   }
 
+  /* ---- compact：次级截止点，尺寸与存在感都明显弱于主倒计时 ---- */
+  .cd--compact {
+    padding: clamp(14px, 1.6vw, 18px);
+    background: var(--bg-alt);
+  }
+
+  .cd--compact .cd__label {
+    margin-bottom: 9px;
+    color: var(--gold-lo);
+    letter-spacing: 0.14em;
+  }
+
+  .cd--compact .cd__row {
+    gap: clamp(6px, 1vw, 12px);
+  }
+
+  .cd--compact .cd__unit {
+    gap: 4px;
+  }
+
+  .cd--compact .cd__num {
+    font-size: clamp(1.25rem, 2.1vw, 1.7rem);
+  }
+
+  .cd--compact .cd__cap {
+    font-size: 0.64rem;
+  }
+
+  .cd--compact .cd__sep {
+    height: 15px;
+  }
+
+  /* 日期已在 label 里给出，compact 下省掉重复的一行 */
+  .cd--compact .cd__date {
+    display: none;
+  }
+
   /* 窄屏：缩小字号并去掉分隔线，避免数字与单位被迫换行 */
   @media (max-width: 560px) {
     .cd__row {
@@ -169,6 +213,14 @@ const d = target.slice(8, 10);
 
     .cd__sep {
       display: none;
+    }
+
+    .cd--compact .cd__num {
+      font-size: clamp(1.1rem, 5.2vw, 1.4rem);
+    }
+
+    .cd--compact .cd__row {
+      gap: 8px;
     }
   }
 </style>

@@ -17,11 +17,27 @@ export const SITE = {
 /** 2027 新春会发布时刻。企划书只写定「2027 年 2 月 5 日」，具体时刻未敲定——此处按 20:00 预置，届时以官方公告为准。 */
 export const CEREMONY_PREMIERE = '2027-02-05T20:00:00+08:00';
 
-/** 2027 投稿截止时刻，企划书明确写死。 */
+/** 报名截止：先报名登记，后交稿，是两个不同的截止点。 */
+export const REGISTRATION_DEADLINE = '2026-10-31T23:59:00+08:00';
+
+/** 2027 交稿截止时刻，企划书明确写死。 */
 export const SUBMISSION_DEADLINE = '2027-01-01T00:00:00+08:00';
 
 /** 上一届（2026）正片首播日期。 */
 export const EDITION_2026_RELEASE = '2026-02-16';
+
+/** 2027 新春会宣传 PV。 */
+export const PV = {
+  bvid: 'BV1ssYu6XEWC',
+  url: 'https://www.bilibili.com/video/BV1ssYu6XEWC/',
+  title: '2027 新春会宣传 PV',
+  cover: '/images/pv-2027.jpg',
+  coverSmall: '/images/pv-2027-960.jpg',
+  /** 首播时刻 */
+  publishedAt: '2026-09-11T18:00:00+08:00',
+  /** 展示用 */
+  publishedLabel: '2026.09.11 18:00',
+} as const;
 
 export const LINKS = {
   /** 2026 新春会正片（B 站） */
@@ -29,8 +45,10 @@ export const LINKS = {
   /** 2027 新春会 QQ 群（群号即入口，不做跳转链接，避免伪造加群 URL） */
   qqGroup: '1108484636',
   bilibili: {
+    /** 新春会官号：正片与官方物料发布账号 */
+    official: { name: 'FoundCeremony', url: 'https://space.bilibili.com/3690997252884642' },
+    /** 主办方成员个人账号 */
     oxygenNine: { name: 'OxygenNineIsHere', url: 'https://space.bilibili.com/159146024' },
-    foundCeremony: { name: 'FoundCeremony', url: 'https://space.bilibili.com/3690997252884642' },
   },
 } as const;
 

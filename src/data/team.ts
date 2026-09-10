@@ -1,44 +1,49 @@
 /** 2027 新春会主办方分工。取自企划书「分工」一节。 */
 
+export type MemberRole = {
+  name: string;
+  detail: string;
+};
+
 export type Member = {
   /** 圈名 / 常用 ID */
   handle: string;
   /** 中文名或备用称呼 */
   alias: string;
-  role: string;
-  detail: string;
+  roles: MemberRole[];
 };
 
 export const TEAM: Member[] = [
   {
     handle: 'Roger_F XL',
     alias: '屑懒',
-    role: '统筹',
-    detail: '所有的统筹、咨询等杂项。',
+    roles: [{ name: '统筹', detail: '所有的统筹、咨询等杂项。' }],
   },
   {
     handle: 'OxygenNine',
     alias: 'O9',
-    role: '视频制作',
-    detail: '正片剪辑、包装与成片输出。',
+    roles: [
+      { name: '视频制作', detail: '正片剪辑、包装与成片输出。' },
+      {
+        name: '网站开发',
+        detail: '本活动官网的设计与开发（with WorkBuddy DeepSeek V4.1 Flash）。',
+      },
+    ],
   },
   {
     handle: 'breaddddd',
     alias: '面包',
-    role: '美工',
-    detail: '主视觉、节目包装与平面素材。',
+    roles: [{ name: '美工', detail: '主视觉、节目包装与平面素材。' }],
   },
   {
     handle: 'Re_Spectators',
     alias: '大R',
-    role: '小剧场文案',
-    detail: '穿插小剧场的剧本撰写。',
+    roles: [{ name: '小剧场文案', detail: '穿插小剧场的剧本撰写。' }],
   },
   {
     handle: 'Odeo',
     alias: '欧豆',
-    role: '小剧场文案',
-    detail: '穿插小剧场的剧本撰写。',
+    roles: [{ name: '小剧场文案', detail: '穿插小剧场的剧本撰写。' }],
   },
 ];
 

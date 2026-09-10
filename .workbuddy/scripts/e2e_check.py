@@ -71,11 +71,12 @@ with sync_playwright() as p:
     print("\n== 3. 倒计时 ==")
     page.goto(BASE + "/2027/", wait_until="load", timeout=60000)
     page.wait_for_timeout(1200)
-    first = page.eval_on_selector_all("[data-cd]", "els => els.map(e => e.textContent)")
+    SEL = "[data-countdown]:not(.cd--compact) [data-cd]"
+    first = page.eval_on_selector_all(SEL, "els => els.map(e => e.textContent)")
     page.wait_for_timeout(2400)
-    second = page.eval_on_selector_all("[data-cd]", "els => els.map(e => e.textContent)")
+    second = page.eval_on_selector_all(SEL, "els => els.map(e => e.textContent)")
     check("倒计时数值随时间变化", first != second, "%s -> %s" % (first, second))
-    check("倒计时四个单位都渲染", len(second) == 4, str(second))
+    check("首个倒计时四个单位都渲染", len(second) == 4, str(second))
 
     target = page.evaluate("document.querySelector('[data-countdown]').dataset.target")
     now_ms = page.evaluate("Date.now()")
@@ -139,6 +140,76 @@ with sync_playwright() as p:
     body = page.inner_text("body")
     check("回看页包含正片 BVID 链接",
           page.eval_on_selector_all("a[href*='BV1dGZMBbEUM']", "e => e.length") >= 1)
+
+    print("\n== 8. 截止日期 / PV / 投稿规则 ==")
+    PV_BV = "BV1ssYu6XEWC"
+    OFFICIAL_SPACE = "space.bilibili.com/3690997252884642"
+
+    for path in ["/", "/2027/"]:
+        page.goto(BASE + path, wait_until="load", timeout=60000)
+        page.wait_for_timeout(1800)
+        n_pv = page.eval_on_selector_all(
+            "a[href*='%s']" % PV_BV, "els => els.length")
+        check("%s 含 PV 链接" % path, n_pv >= 1, "count=%d" % n_pv)
+        has_img = page.eval_on_selector_all(
+            "img[src*='pv-2027']", "els => els.length")
+        check("%s 含 PV 封面图" % path, has_img >= 1, "count=%d" % has_img)
+        check("%s 含 PV 首播时间" % path, "2026.09.11 18:00" in page.inner_text("body"))
+
+    page.goto(BASE + "/", wait_until="load", timeout=60000)
+    page.wait_for_timeout(1500)
+    cds = page.eval_on_selector_all("[data-countdown]", "els => els.map(e => e.dataset.target)")
+    compact = page.eval_on_selector_all(".cd--compact", "els => els.length")
+    check("首页共三个倒计时", len(cds) == 3, str(cds))
+    check("首页两个次级倒计时并列", compact == 2, "compact=%d" % compact)
+
+    for path in ["/", "/2027/", "/join/"]:
+        page.goto(BASE + path, wait_until="load", timeout=60000)
+        page.wait_for_timeout(700)
+        txt = page.inner_text("body")
+        check("%s 含报名截止 2026.10.31" % path, "2026.10.31" in txt or "2026 年 10 月 31 日" in txt)
+
+    page.goto(BASE + "/join/", wait_until="load", timeout=60000)
+    page.wait_for_timeout(700)
+    txt = page.inner_text("body")
+    check("投稿页已更新单人投稿数规则", "最多投稿 3 个" in txt)
+    check("投稿页仍保留旧的「不超过 2 个」表述已移除", "不超过 2 个" not in txt)
+
+    page.goto(BASE + "/2027/", wait_until="load", timeout=60000)
+    page.wait_for_timeout(700)
+    txt = page.inner_text("body")
+    check("主办方含 O9 网站开发", "网站开发" in txt)
+    check("署名为 WorkBuddy DeepSeek V4.1 Flash", "WorkBuddy DeepSeek V4.1 Flash" in txt)
+
+    page.goto(BASE + "/", wait_until="load", timeout=60000)
+    page.wait_for_timeout(700)
+    rail_href = page.eval_on_selector_all(
+        ".rail__ext[href]", "els => els.map(e => e.getAttribute('href'))")
+    check("侧栏 B 站链接指向官号", any(OFFICIAL_SPACE in (h or "") for h in rail_href), str(rail_href))
+
+    print("\n== 9. 视觉约定 ==")
+    page.goto(BASE + "/", wait_until="load", timeout=60000)
+    page.wait_for_timeout(1500)
+    styles = page.evaluate("""() => {
+      const wm = document.querySelector('.hero__wordmark');
+      const tex = document.querySelector('.hero .texture');
+      return {
+        wordmark: wm ? getComputedStyle(wm).color : null,
+        txtOpacity: tex ? getComputedStyle(tex).opacity : null,
+        fg: getComputedStyle(document.documentElement).getPropertyValue('--fg').trim()
+      };
+    }""")
+    digits = re.compile(r"[0-9]+")
+
+    def rgb(s):
+        return tuple(int(x) for x in digits.findall(s or "")[:3])
+
+    def hex2rgb(h):
+        h = h.strip()
+        return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
+    check("字标颜色为 --fg", rgb(styles["wordmark"]) == hex2rgb(styles["fg"]),
+          "%s vs %s" % (styles["wordmark"], styles["fg"]))
+    check("纹样不透明度为 0.07", styles["txtOpacity"] == "0.07", str(styles["txtOpacity"]))
 
     browser.close()
 

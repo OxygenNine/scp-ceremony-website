@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
+import PvHero from '../components/PvHero.astro';
 import SectionHead from '../components/SectionHead.astro';
 import VideoCard from '../components/VideoCard.astro';
 import Timeline from '../components/Timeline.astro';
@@ -37,11 +38,11 @@ const entries = [
   },
   {
     icon: MonitorPlay,
-    title: '关注 B 站',
-    body: '宣传视频、定档预告与最终正片都在 B 站首发。',
+    title: '关注 B 站官号',
+    body: '宣传 PV、定档预告与最终正片都在官号首发。',
     action: 'external' as const,
-    label: `@${LINKS.bilibili.oxygenNine.name}`,
-    href: LINKS.bilibili.oxygenNine.url,
+    label: `@${LINKS.bilibili.official.name}`,
+    href: LINKS.bilibili.official.url,
   },
 ];
 
@@ -51,12 +52,14 @@ const highlights = PIECES.slice(0, 3);
 <BaseLayout>
   <Hero
     eyebrow="第二届 · 筹备中"
-    lede="由 SCP 基金会中文分部社群创作者共同制作的年度合作企划。手书、音乐、小剧场、混剪——统一剪辑成一场完整的线上放映，在除夕当天上线。2027 新春会的投稿通道将于 2026 年 9 月 11 日开启。"
+    lede="由 SCP 基金会中文分部社群创作者共同制作的年度合作企划。手书、音乐、小剧场、混剪——统一剪辑成一场完整的线上放映，在除夕当天上线。本届报名自 2026 年 9 月 11 日开放，10 月 31 日 23:59 截止；作品交稿截止 2027 年 1 月 1 日。"
     primaryHref="/join/"
     primaryLabel="参与投稿"
     secondaryHref="/2026/"
     secondaryLabel="回看 2026"
   />
+
+  <PvHero />
 
   <div class="shell">
     <!-- 01 关于 -->
@@ -71,12 +74,13 @@ const highlights = PIECES.slice(0, 3);
       <div class="about">
         <div class="about__text">
           <p>
-            第一届新春会于 2026 年除夕上线，全长 3 小时 59 分，收录了来自不同社群创作者的手书、填词、小剧场与混剪作品。它在 B 站的播放量达到 24.2
-            万，也让这个形式有了继续做下去的理由。
+            第一届新春会于 2026 年除夕上线，全长 {durationText(ARCHIVE_STATS.featureDuration)}，收录了来自不同社群创作者的手书、填词、小剧场与混剪作品。它在
+            B 站的播放量为 {views(ARCHIVE_STATS.featureViews)}，也让这个形式有了继续做下去的理由。
           </p>
           <p>
-            第二届（2027）的筹备已于 2026 年 9 月启动，作品截稿时间为 2027 年 1 月 1 日 00:00，正片将在
-            2027 年 2 月 5 日除夕当天发布。除开场混剪与新春贺词外，本届计划收录约 30 ~ 35 个节目。
+            第二届（2027）的筹备已于 2026 年 9 月启动。报名登记截止 2026 年 10 月 31 日 23:59，作品交稿截止 2027
+            年 1 月 1 日 00:00，正片将在 2027 年 2 月 5 日除夕当天发布。除开场混剪与新春贺词外，本届计划收录约 30 ~
+            35 个节目。
           </p>
           <p class="dim about__small">
             页面上的节目数量、播放量、时长等数据均取自 B 站公开接口，取样时间为 2026 年 9 月 10 日。
@@ -144,7 +148,7 @@ const highlights = PIECES.slice(0, 3);
         index="04"
         kicker="Take Part"
         title="怎么参与"
-        note={`投稿通道开放至 ${SUBMISSION_FACTS[0].value}。`}
+        note={`报名登记截止 ${SUBMISSION_FACTS[0].value}，作品交稿截止 ${SUBMISSION_FACTS[1].value}。`}
       />
 
       <div class="entries">

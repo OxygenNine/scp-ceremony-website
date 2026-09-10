@@ -1,0 +1,180 @@
+---
+import { ArrowRight, MonitorPlay } from '@lucide/astro';
+import BrandMark from './BrandMark.astro';
+import Countdown from './Countdown.astro';
+import seigaiha from '../assets/patterns/seigaiha.svg?raw';
+import { SITE, LINKS, CEREMONY_PREMIERE } from '../data/site';
+
+interface Props {
+  eyebrow: string;
+  lede: string;
+  /** 主行动链接 */
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref: string;
+  secondaryLabel: string;
+}
+const { eyebrow, lede, primaryHref, primaryLabel, secondaryHref, secondaryLabel } = Astro.props;
+---
+
+<section class="hero">
+  <div class="texture" aria-hidden="true" set:html={seigaiha}></div>
+
+  <div class="shell hero__shell">
+    <div class="hero__rule">
+      <span class="micro">{SITE.org}</span>
+      <span class="hero__ruleline" aria-hidden="true"></span>
+      <span class="micro micro--dim">{SITE.edition} · {SITE.year}</span>
+    </div>
+
+    <div class="hero__grid">
+      <div class="hero__lead">
+        <span class="micro hero__eyebrow">{eyebrow}</span>
+        <h1 class="visually-hidden">{SITE.title}</h1>
+        <div class="hero__wordmark">
+          <BrandMark name="wordmark" label={SITE.title} />
+        </div>
+        <p class="hero__lede">{lede}</p>
+
+        <div class="hero__cta">
+          <a class="btn btn--solid" href={primaryHref}>
+            {primaryLabel}
+            <ArrowRight size={15} stroke-width={1.8} />
+          </a>
+          <a class="btn" href={secondaryHref}>
+            <MonitorPlay size={15} stroke-width={1.6} />
+            {secondaryLabel}
+          </a>
+        </div>
+      </div>
+
+      <div class="hero__emblem">
+        <div class="hero__emblemFrame">
+          <BrandMark name="ceremony-2027" label="2027 新春会主视觉标志" />
+        </div>
+        <span class="hero__emblemCap micro micro--dim">{SITE.year} 主视觉</span>
+      </div>
+    </div>
+
+    <Countdown target={CEREMONY_PREMIERE} label="距离 2027 新春会首播" doneLabel="2027 新春会已上线" />
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding-top: clamp(40px, 6vw, 72px);
+    padding-bottom: clamp(48px, 7vw, 96px);
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* 纹样只作为极低存在感的肌理，向顶部淡出 */
+  .hero .texture {
+    color: var(--gold);
+    opacity: 0.03;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 60%, #000 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 60%, #000 100%);
+  }
+
+  .hero__shell {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero__rule {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero__ruleline {
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 72px);
+    align-items: center;
+    padding-block: clamp(36px, 5vw, 64px);
+  }
+
+  .hero__eyebrow {
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  .hero__wordmark {
+    width: clamp(260px, 40vw, 560px);
+    color: var(--gold);
+    margin-bottom: 26px;
+  }
+
+  .hero__lede {
+    font-size: clamp(1rem, 1.4vw, 1.14rem);
+    line-height: 1.95;
+    color: var(--fg-2);
+    max-width: 44ch;
+    margin-bottom: 30px;
+  }
+
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .hero__emblem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* 单层方框，内部不再套圆角容器 */
+  .hero__emblemFrame {
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    padding: 12%;
+    border: 1px solid var(--line-2);
+    color: var(--gold);
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(201, 162, 39, 0.07),
+      transparent 68%
+    );
+  }
+
+  .hero__emblemCap {
+    letter-spacing: 0.22em;
+  }
+
+  @media (max-width: 880px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+
+    .hero__emblem {
+      order: -1;
+      align-items: flex-start;
+    }
+
+    .hero__emblemFrame {
+      max-width: 200px;
+      padding: 14%;
+    }
+
+    .hero__wordmark {
+      width: min(100%, 420px);
+    }
+  }
+</style>

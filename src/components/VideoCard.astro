@@ -1,0 +1,241 @@
+---
+import { ArrowUpRight, Play, Clock, Eye } from '@lucide/astro';
+import type { Video } from '../data/videos';
+import { duration, views, dotDate } from '../lib/format';
+
+interface Props {
+  video: Video;
+  /** feature = 大卡（带封面与数据）；piece = 单品墙小卡 */
+  variant?: 'feature' | 'piece';
+}
+
+const { video, variant = 'piece' } = Astro.props;
+---
+
+<article class={`vc vc--${variant}`}>
+  <a class="vc__link" href={video.url} target="_blank" rel="noopener noreferrer">
+    <span class="vc__frame">
+      <img
+        class="vc__cover"
+        src={video.cover}
+        alt={`${video.display} 封面`}
+        loading={variant === 'feature' ? 'eager' : 'lazy'}
+        decoding="async"
+        width="880"
+        height="550"
+      />
+      <span class="vc__badge tnum">{duration(video.duration)}</span>
+      <span class="vc__play" aria-hidden="true"><Play size={16} stroke-width={2} /></span>
+    </span>
+
+    <span class="vc__body">
+      <span class="vc__kind micro micro--dim">{video.kind}</span>
+      <h3 class="vc__title">{video.display}</h3>
+      <span class="vc__meta">
+        <span class="vc__author">{video.author}</span>
+        <span class="vc__dot" aria-hidden="true"></span>
+        <span class="tnum">{dotDate(video.published)}</span>
+        <span class="vc__dot" aria-hidden="true"></span>
+        <span class="vc__stat tnum"><Eye size={13} stroke-width={1.6} />{views(video.views)}</span>
+      </span>
+      {video.note && <span class="vc__note">{video.note}</span>}
+    </span>
+
+    <span class="vc__go" aria-hidden="true">
+      <ArrowUpRight size={15} stroke-width={1.6} />
+    </span>
+  </a>
+</article>
+
+<style>
+  .vc {
+    position: relative;
+  }
+
+  .vc__link {
+    display: block;
+    height: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color var(--t), background-color var(--t);
+  }
+
+  .vc__link:hover {
+    border-color: var(--line-3);
+    background: var(--surface-2);
+  }
+
+  /* 封面：外框裁切，不做圆角，避免多层嵌套的圆角矩形 */
+  .vc__frame {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .vc__cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.82) brightness(0.86) contrast(1.04);
+    transition: filter var(--t);
+  }
+
+  .vc__link:hover .vc__cover {
+    filter: saturate(0.98) brightness(0.96) contrast(1.02);
+  }
+
+  .vc__badge {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 3px 8px;
+    background: rgba(14, 7, 9, 0.86);
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+    font-size: 0.72rem;
+    color: var(--fg-2);
+    letter-spacing: 0.04em;
+  }
+
+  .vc__play {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    color: var(--gold);
+    background: rgba(14, 7, 9, 0.72);
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-xs);
+    opacity: 0;
+    transition: opacity var(--t);
+  }
+
+  .vc__link:hover .vc__play {
+    opacity: 1;
+  }
+
+  .vc__body {
+    display: block;
+    padding: 15px 17px 17px;
+  }
+
+  .vc__kind {
+    display: block;
+    margin-bottom: 7px;
+  }
+
+  .vc__title {
+    font-size: 1.02rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    color: var(--fg);
+  }
+
+  .vc__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--fg-3);
+    letter-spacing: 0.02em;
+  }
+
+  .vc__author {
+    color: var(--fg-2);
+  }
+
+  .vc__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .vc__dot {
+    width: 2px;
+    height: 2px;
+    background: var(--fg-4);
+  }
+
+  .vc__note {
+    display: block;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    font-size: 0.74rem;
+    line-height: 1.75;
+    color: var(--fg-3);
+  }
+
+  .vc__go {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    color: var(--fg-4);
+    transition: color var(--t);
+  }
+
+  .vc__go :global(svg) {
+    transition: transform var(--t);
+  }
+
+  .vc__link:hover .vc__go {
+    color: var(--gold);
+  }
+
+  .vc__link:hover .vc__go svg {
+    transform: translate(1px, -1px);
+  }
+
+  /* ---- feature 变体：横向大卡 ---- */
+  .vc--feature .vc__link {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .vc--feature .vc__frame {
+    aspect-ratio: auto;
+    min-height: 260px;
+    border-bottom: 0;
+    border-right: 1px solid var(--line);
+  }
+
+  .vc--feature .vc__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(22px, 3vw, 40px);
+  }
+
+  .vc--feature .vc__title {
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    margin-bottom: 16px;
+  }
+
+  .vc--feature .vc__go {
+    right: 18px;
+    top: 18px;
+  }
+
+  @media (max-width: 860px) {
+    .vc--feature .vc__link {
+      grid-template-columns: 1fr;
+    }
+
+    .vc--feature .vc__frame {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+      min-height: 0;
+      aspect-ratio: 16 / 10;
+    }
+  }
+</style>

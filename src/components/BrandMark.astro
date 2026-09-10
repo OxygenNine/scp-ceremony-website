@@ -1,0 +1,37 @@
+---
+/**
+ * 内联官方 SVG 标记。
+ * 图形均为主办方提供的官方标识文件（原件备份见 .workbuddy/source-assets/），
+ * 已做过 id 命名空间化并剥离硬编码填充色，因此颜色完全由 currentColor 决定，
+ * 不在这里重绘任何图形。
+ */
+import scpLogo from '../assets/logos/scp-logo.svg?raw';
+import cer2026 from '../assets/logos/ceremony-2026.svg?raw';
+import cer2027 from '../assets/logos/ceremony-2027.svg?raw';
+import wordmark2027 from '../assets/logos/wordmark-2027.svg?raw';
+
+const SET = {
+  scp: scpLogo,
+  'ceremony-2026': cer2026,
+  'ceremony-2027': cer2027,
+  wordmark: wordmark2027,
+} as const;
+
+interface Props {
+  name: keyof typeof SET;
+  class?: string;
+  /** 无障碍标签；缺省时视为纯装饰，对屏幕阅读器隐藏 */
+  label?: string;
+}
+
+const { name, class: className = '', label } = Astro.props;
+const svg = SET[name];
+---
+
+<span
+  class={`mark ${className}`}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  set:html={svg}
+/>

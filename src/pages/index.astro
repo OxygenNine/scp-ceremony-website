@@ -1,0 +1,315 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import VideoCard from '../components/VideoCard.astro';
+import Timeline from '../components/Timeline.astro';
+import { ArrowRight, Users, FilePen, MonitorPlay, Copy } from '@lucide/astro';
+import { FEATURE, PIECES, ARCHIVE_STATS } from '../data/videos';
+import { PRODUCTION } from '../data/team';
+import { SUBMISSION_FACTS } from '../data/submission';
+import { LINKS, SITE } from '../data/site';
+import { durationText, views } from '../lib/format';
+
+const stats = [
+  { value: durationText(ARCHIVE_STATS.featureDuration), label: '首届正片时长', hint: '2026.02.16 发布' },
+  { value: `${views(ARCHIVE_STATS.featureViews)}`, label: '正片播放量', hint: '截至 2026.09.10' },
+  { value: `${ARCHIVE_STATS.pieceCount}`, label: '已归档单品', hint: '含特别环节' },
+  { value: PRODUCTION.programTarget, label: '2027 收录规模', hint: '除开场与贺词' },
+];
+
+const entries = [
+  {
+    icon: Users,
+    title: '加入 QQ 群',
+    body: '所有公告、共创表格与作品交付都通过 2027 新春会 QQ 群进行。',
+    action: 'copy' as const,
+    label: `复制群号 ${LINKS.qqGroup}`,
+    href: LINKS.qqGroup,
+  },
+  {
+    icon: FilePen,
+    title: '查看投稿要求',
+    body: '交付格式、内容红线、节目类型与时长限制，逐条来自本届企划书。',
+    action: 'link' as const,
+    label: '前往投稿页',
+    href: '/join/',
+  },
+  {
+    icon: MonitorPlay,
+    title: '关注 B 站',
+    body: '宣传视频、定档预告与最终正片都在 B 站首发。',
+    action: 'external' as const,
+    label: `@${LINKS.bilibili.oxygenNine.name}`,
+    href: LINKS.bilibili.oxygenNine.url,
+  },
+];
+
+const highlights = PIECES.slice(0, 3);
+---
+
+<BaseLayout>
+  <Hero
+    eyebrow="第二届 · 筹备中"
+    lede="由 SCP 基金会中文分部社群创作者共同制作的年度合作企划。手书、音乐、小剧场、混剪——统一剪辑成一场完整的线上放映，在除夕当天上线。2027 新春会的投稿通道将于 2026 年 9 月 11 日开启。"
+    primaryHref="/join/"
+    primaryLabel="参与投稿"
+    secondaryHref="/2026/"
+    secondaryLabel="回看 2026"
+  />
+
+  <div class="shell">
+    <!-- 01 关于 -->
+    <section class="section">
+      <SectionHead
+        index="01"
+        kicker="About"
+        title="这是一场什么活动"
+        note="新春会是一群人凑在一起把一年的创作拼成一晚上的事。这里写清楚它是什么、上一届做到了什么程度、以及本届什么时候需要你交稿。"
+      />
+
+      <div class="about">
+        <div class="about__text">
+          <p>
+            第一届新春会于 2026 年除夕上线，全长 3 小时 59 分，收录了来自不同社群创作者的手书、填词、小剧场与混剪作品。它在 B 站的播放量达到 24.2
+            万，也让这个形式有了继续做下去的理由。
+          </p>
+          <p>
+            第二届（2027）的筹备已于 2026 年 9 月启动，作品截稿时间为 2027 年 1 月 1 日 00:00，正片将在
+            2027 年 2 月 5 日除夕当天发布。除开场混剪与新春贺词外，本届计划收录约 30 ~ 35 个节目。
+          </p>
+          <p class="dim about__small">
+            页面上的节目数量、播放量、时长等数据均取自 B 站公开接口，取样时间为 2026 年 9 月 10 日。
+          </p>
+        </div>
+
+        <dl class="stats">
+          {
+            stats.map((s) => (
+              <div class="stats__item">
+                <dt class="stats__value tnum">{s.value}</dt>
+                <dd class="stats__label">
+                  {s.label}
+                  <span class="stats__hint">{s.hint}</span>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <!-- 02 2026 回看 -->
+    <section class="section">
+      <SectionHead
+        index="02"
+        kicker="Previous Edition"
+        title="2026 首届新春会"
+        note="正片、预告与特别环节的完整归档，可在回看页查看全部单品。"
+      />
+      <VideoCard video={FEATURE} variant="feature" />
+
+      <div class="roll">
+        {highlights.map((v) => <VideoCard video={v} />)}
+      </div>
+
+      <p class="more">
+        <a class="golink" href="/2026/">
+          查看 2026 全部归档（{ARCHIVE_STATS.pieceCount} 个单品）
+          <ArrowRight size={14} stroke-width={1.8} />
+        </a>
+      </p>
+    </section>
+
+    <!-- 03 时间轴 -->
+    <section class="section">
+      <SectionHead
+        index="03"
+        kicker="Schedule"
+        title="2027 关键节点"
+        note="仅列出已确定的公开节点。审核组名单、致辞嘉宾、大合唱曲目与主线故事仍在筹备中，确定后会另行公告。"
+      />
+      <Timeline compact />
+      <p class="more">
+        <a class="golink" href="/2027/">
+          查看完整筹备进度
+          <ArrowRight size={14} stroke-width={1.8} />
+        </a>
+      </p>
+    </section>
+
+    <!-- 04 参与 -->
+    <section class="section">
+      <SectionHead
+        index="04"
+        kicker="Take Part"
+        title="怎么参与"
+        note={`投稿通道开放至 ${SUBMISSION_FACTS[0].value}。`}
+      />
+
+      <div class="entries">
+        {
+          entries.map((e) => {
+            const Icon = e.icon;
+            const tag = e.action === 'copy' ? 'button' : 'a';
+            const attrs =
+              e.action === 'external'
+                ? { href: e.href, target: '_blank', rel: 'noopener noreferrer' }
+                : e.action === 'link'
+                  ? { href: e.href }
+                  : { type: 'button', 'data-copy-qq': e.href };
+            const Tag = tag as any;
+            return (
+              <article class="entry">
+                <span class="entry__icon">
+                  <Icon size={20} stroke-width={1.4} />
+                </span>
+                <h3 class="entry__title">{e.title}</h3>
+                <p class="entry__body">{e.body}</p>
+                <Tag class="entry__action golink" {...attrs}>
+                  {e.action === 'copy' && <Copy size={13} stroke-width={1.6} />}
+                  {e.label}
+                  {e.action !== 'copy' && <ArrowRight size={13} stroke-width={1.8} />}
+                </Tag>
+              </article>
+            );
+          })
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* ---- 关于 ---- */
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 72px);
+    align-items: start;
+  }
+
+  .about__text p {
+    font-size: 1.02rem;
+    line-height: 2;
+    color: var(--fg-2);
+    margin-bottom: 1.2em;
+    max-width: 60ch;
+  }
+
+  .about__text p:first-child {
+    color: var(--fg);
+  }
+
+  .about__small {
+    font-size: 0.78rem !important;
+    line-height: 1.9 !important;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  .stats {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .stats__item {
+    padding: 20px 18px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stats__value {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    line-height: 1.1;
+    color: var(--gold);
+    margin: 0 0 8px;
+  }
+
+  .stats__label {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--fg-2);
+    line-height: 1.6;
+    display: block;
+  }
+
+  .stats__hint {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--fg-4);
+    margin-top: 3px;
+  }
+
+  /* ---- 单品横排 ---- */
+  .roll {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 18px;
+  }
+
+  .more {
+    margin-top: 26px;
+  }
+
+  /* ---- 参与入口 ---- */
+  .entries {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .entry {
+    padding: clamp(20px, 2.4vw, 30px);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .entry__icon {
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .entry__title {
+    font-size: 1.15rem;
+  }
+
+  .entry__body {
+    font-size: var(--step-small);
+    line-height: 1.9;
+    color: var(--fg-2);
+    flex: 1 1 auto;
+  }
+
+  .entry__action {
+    margin-top: 8px;
+    align-self: flex-start;
+    text-align: left;
+  }
+
+  @media (max-width: 900px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+
+    .roll,
+    .entries {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 901px) and (max-width: 1100px) {
+    .roll {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

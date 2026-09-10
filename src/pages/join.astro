@@ -1,0 +1,431 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SectionHead from '../components/SectionHead.astro';
+import RuleGroupBlock from '../components/RuleGroupBlock.astro';
+import { TriangleAlert, Users, MonitorPlay, ArrowRight, Info } from '@lucide/astro';
+import {
+  REGISTRATION,
+  DELIVERY,
+  CONTENT,
+  GENRES,
+  LIMITS,
+  QUALITY,
+  REJECTIONS,
+  NOTES,
+  SUBMISSION_FACTS,
+} from '../data/submission';
+import { LINKS } from '../data/site';
+
+const facts = SUBMISSION_FACTS.map((f) => ({ label: `${f.label}（${f.hint}）`, value: f.value }));
+
+const toc = [
+  { href: '#registration', title: '报名流程' },
+  { href: '#delivery', title: '交付文件' },
+  { href: '#content', title: '视频内容' },
+  { href: '#genres', title: '节目类型' },
+  { href: '#limits', title: '时长与数量' },
+  { href: '#quality', title: '质量要求' },
+  { href: '#rejections', title: '不被收录的情形' },
+  { href: '#contact', title: '联系方式' },
+];
+---
+
+<BaseLayout
+  pageTitle="投稿参与"
+  description="SCP 基金会中文分部 2027 新春会投稿要求：报名流程、交付格式、内容红线、节目类型、时长与数量限制。截稿 2027 年 1 月 1 日 00:00。"
+>
+  <PageHeader
+    kicker="Submission · 2027"
+    title="投稿参与"
+    lede="以下要求逐条取自 2027 新春会企划书，未做扩张解释。投稿前请完整阅读一遍——尤其是「不被收录的情形」一节，历届被拒收的稿件大多踩在这几条上。"
+    facts={facts}
+    mark="ceremony-2027"
+    texture="seigaiha"
+  />
+
+  <nav class="shell toc" aria-label="本页目录">
+    {
+      toc.map((t, i) => (
+        <a class="toc__item" href={t.href}>
+          <span class="toc__no tnum">{String(i + 1).padStart(2, '0')}</span>
+          <span class="toc__title">{t.title}</span>
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="shell">
+    <!-- 00 报名流程 -->
+    <section class="section" id="registration">
+      <SectionHead
+        index="00"
+        kicker="How to Enter"
+        title="报名流程"
+        note="报名与交付全部通过 2027 新春会 QQ 群进行。加入群后请先阅读群公告。"
+      />
+
+      <ol class="steps">
+        {
+          REGISTRATION.map((s, i) => (
+            <li class="steps__item">
+              <span class="steps__no tnum">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <h3 class="steps__title">{s.title}</h3>
+                <p class="steps__body">{s.detail}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <RuleGroupBlock group={DELIVERY} note="交付前请逐项核对，尤其是文件命名与水印。" />
+    <RuleGroupBlock group={CONTENT} note="内容层面的判定标准，也是历届争议最多的一节。" />
+
+    <!-- 节目类型 -->
+    <section class="section" id="genres">
+      <SectionHead
+        index="04"
+        kicker="Genres"
+        title="节目类型"
+        note="作品可以属于以下某一类，也可以是几种类型的混合。类型只用于分档，不影响录用判定。"
+      />
+      <ul class="genres">
+        {
+          GENRES.map((g, i) => (
+            <li class="genres__item">
+              <span class="genres__no tnum">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="genres__title">{g.title}</h3>
+              <p class="genres__body">{g.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <RuleGroupBlock group={LIMITS} note="时长是最常见的拒收原因，请务必自查。" />
+    <RuleGroupBlock group={QUALITY} note="完成度、AI 使用与素材出处都在这节。" />
+
+    <!-- 不被收录的情形 -->
+    <section class="section" id="rejections">
+      <SectionHead
+        index="07"
+        kicker="Rejected"
+        title="不被收录的情形"
+        note="以下情形会被直接拒收。其中抄袭、盗搬他人作品的投稿者会被永久禁止向新春会投稿。"
+      />
+
+      <ul class="rejects">
+        {
+          REJECTIONS.map((r) => (
+            <li class="rejects__item">
+              <TriangleAlert size={15} stroke-width={1.7} />
+              <span>{r}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="notes">
+        <h3 class="notes__head">
+          <Info size={15} stroke-width={1.7} />
+          另外还需要注意
+        </h3>
+        <ul class="notes__list">
+          {NOTES.map((n) => <li>{n}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section class="section" id="contact">
+      <SectionHead
+        index="08"
+        kicker="Contact"
+        title="联系方式"
+        note="投稿、时长申请与特殊情况都请通过 QQ 群进行，主办方会在群内处理。"
+      />
+
+      <div class="contact">
+        <article class="contact__card">
+          <span class="micro">2027 新春会 QQ 群</span>
+          <p class="contact__value tnum">{LINKS.qqGroup}</p>
+          <p class="contact__body">
+            群内提供共创表格、投稿要求全文与作品交付文件夹。截稿前的所有公告也在此发布。
+          </p>
+          <button class="btn" type="button" data-copy-qq={LINKS.qqGroup}>
+            <Users size={15} stroke-width={1.5} />
+            复制群号
+          </button>
+        </article>
+
+        <article class="contact__card">
+          <span class="micro">B 站</span>
+          <p class="contact__value">@{LINKS.bilibili.oxygenNine.name}</p>
+          <p class="contact__body">宣传视频、定档预告与最终正片的发布账号。私信不处理投稿事务。</p>
+          <a
+            class="btn"
+            href={LINKS.bilibili.oxygenNine.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <MonitorPlay size={15} stroke-width={1.5} />
+            前往 B 站
+          </a>
+        </article>
+      </div>
+
+      <p class="more">
+        <a class="golink" href="/2027/">
+          返回 2027 筹备页
+          <ArrowRight size={14} stroke-width={1.8} />
+        </a>
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* ---- 页内目录 ---- */
+  .toc {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-left: 1px solid var(--line);
+    border-top: 1px solid var(--line);
+    margin-top: clamp(28px, 4vw, 44px);
+  }
+
+  .toc__item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 14px 16px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    transition: background-color var(--t), color var(--t);
+  }
+
+  .toc__item:hover {
+    background: var(--surface);
+  }
+
+  .toc__no {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    color: var(--fg-4);
+    transition: color var(--t);
+  }
+
+  .toc__item:hover .toc__no {
+    color: var(--gold);
+  }
+
+  .toc__title {
+    font-size: 0.86rem;
+    color: var(--fg-2);
+  }
+
+  /* ---- 报名步骤 ---- */
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .steps__item {
+    padding: clamp(20px, 2.4vw, 28px);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .steps__no {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--gold-lo);
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+
+  .steps__title {
+    font-size: 1.06rem;
+    margin-bottom: 8px;
+  }
+
+  .steps__body {
+    font-size: var(--step-small);
+    line-height: 1.9;
+    color: var(--fg-2);
+  }
+
+  /* ---- 节目类型 ---- */
+  .genres {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .genres__item {
+    padding: clamp(18px, 2.2vw, 26px);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .genres__no {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    color: var(--fg-4);
+    margin-bottom: 10px;
+  }
+
+  .genres__title {
+    font-size: 1.1rem;
+    margin-bottom: 7px;
+  }
+
+  .genres__body {
+    font-size: 0.82rem;
+    line-height: 1.85;
+    color: var(--fg-2);
+  }
+
+  /* ---- 拒收 ---- */
+  .rejects {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .rejects__item {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 14px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--step-small);
+    line-height: 1.9;
+    color: var(--fg-2);
+  }
+
+  .rejects__item :global(svg) {
+    margin-top: 6px;
+    color: var(--crimson-hi);
+  }
+
+  .notes {
+    margin-top: 30px;
+    padding: clamp(20px, 2.6vw, 28px);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+  }
+
+  .notes__head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-text);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .notes__list {
+    margin: 0;
+    padding-left: 1.15em;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: var(--step-small);
+    line-height: 1.9;
+    color: var(--fg-2);
+    max-width: 86ch;
+  }
+
+  /* ---- 联系 ---- */
+  .contact {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .contact__card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    padding: clamp(20px, 2.6vw, 30px);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--surface);
+  }
+
+  .contact__value {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    color: var(--gold);
+    line-height: 1.2;
+  }
+
+  .contact__body {
+    font-size: var(--step-small);
+    line-height: 1.9;
+    color: var(--fg-2);
+    flex: 1 1 auto;
+    max-width: 40ch;
+  }
+
+  .more {
+    margin-top: 26px;
+  }
+
+  @media (max-width: 820px) {
+    .toc {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .contact {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<style is:global>
+  /* 锚点跳转时为吸顶栏留出空间 */
+  #registration,
+  #delivery,
+  #content,
+  #genres,
+  #limits,
+  #quality,
+  #rejections,
+  #contact {
+    scroll-margin-top: 24px;
+  }
+
+  @media (max-width: 960px) {
+    #registration,
+    #delivery,
+    #content,
+    #genres,
+    #limits,
+    #quality,
+    #rejections,
+    #contact {
+      scroll-margin-top: 74px;
+    }
+  }
+</style>

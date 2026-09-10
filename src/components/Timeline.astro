@@ -1,0 +1,164 @@
+---
+import { Check, CircleDot, Clock } from '@lucide/astro';
+import { MILESTONES, statusOf } from '../data/schedule';
+
+interface Props {
+  /** 只显示部分节点 */
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+const now = new Date();
+const list = compact ? MILESTONES.filter((m) => m.phase !== 'review' && m.phase !== 'produce') : MILESTONES;
+---
+
+<ol class="tl">
+  {
+    list.map((m) => {
+      const status = statusOf(m, now);
+      return (
+        <li class={`tl__item tl__item--${status}`} data-phase={m.phase}>
+          <span class="tl__marker" aria-hidden="true">
+            {status === 'done' ? (
+              <Check size={11} stroke-width={2.4} />
+            ) : status === 'current' ? (
+              <CircleDot size={11} stroke-width={2.4} />
+            ) : (
+              <Clock size={11} stroke-width={1.8} />
+            )}
+          </span>
+
+          <div class="tl__body">
+            <div class="tl__top">
+              <span class="tl__date tnum">{m.label}</span>
+              {m.deadline && <span class="tl__flag">截止</span>}
+              <span class="tl__status micro micro--dim">
+                {status === 'done' ? '已完成' : status === 'current' ? '进行中' : '未开始'}
+              </span>
+            </div>
+            <h3 class="tl__title">{m.title}</h3>
+            <p class="tl__detail">{m.detail}</p>
+          </div>
+        </li>
+      );
+    })
+  }
+</ol>
+
+<style>
+  .tl {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .tl__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 18px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* 纵向金线：用伪元素连起来，不额外加边框层 */
+  .tl__item::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--line);
+  }
+
+  .tl__item:first-child::before {
+    top: 30px;
+  }
+
+  .tl__item:last-child::before {
+    bottom: calc(100% - 30px);
+  }
+
+  .tl__marker {
+    position: relative;
+    z-index: 1;
+    width: 33px;
+    height: 33px;
+    display: grid;
+    place-items: center;
+    background: var(--bg);
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-xs);
+    color: var(--fg-4);
+    transition: color var(--t), border-color var(--t);
+  }
+
+  .tl__item--done .tl__marker {
+    color: var(--gold-lo);
+  }
+
+  .tl__item--current .tl__marker {
+    color: var(--gold);
+    border-color: var(--line-3);
+  }
+
+  .tl__body {
+    padding-top: 2px;
+  }
+
+  .tl__top {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .tl__date {
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+  }
+
+  .tl__flag {
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    padding: 1px 7px;
+    color: var(--crimson-hi);
+    border: 1px solid var(--crimson);
+    border-radius: var(--r-xs);
+    background: var(--crimson-dim);
+  }
+
+  .tl__status {
+    margin-left: auto;
+  }
+
+  .tl__title {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+  }
+
+  .tl__item--upcoming .tl__title {
+    color: var(--fg-2);
+  }
+
+  .tl__detail {
+    font-size: var(--step-small);
+    line-height: 1.9;
+    color: var(--fg-2);
+    max-width: 68ch;
+  }
+
+  .tl__item--upcoming .tl__detail {
+    color: var(--fg-3);
+  }
+
+  @media (max-width: 560px) {
+    .tl__status {
+      margin-left: 0;
+    }
+  }
+</style>

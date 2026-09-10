@@ -1,0 +1,128 @@
+---
+import { House, Archive, Hourglass, FilePen, Users, MonitorPlay } from '@lucide/astro';
+import BrandMark from './BrandMark.astro';
+import { NAV, LINKS } from '../data/site';
+
+const ICONS = {
+  house: House,
+  archive: Archive,
+  hourglass: Hourglass,
+  'file-pen': FilePen,
+} as const;
+
+/** 归一化路径：/2026、/2026/ 、/2026/index.html 都视为同一页 */
+const here = Astro.url.pathname.replace(/index\.html$/, '').replace(/\/+$/, '') || '/';
+
+const isCurrent = (href: string) => {
+  const h = href.replace(/\/+$/, '') || '/';
+  return h === here;
+};
+---
+
+<aside class="rail" aria-label="站点导航">
+  <a class="rail__brand" href="/" aria-label="返回首页">
+    <BrandMark name="scp" />
+  </a>
+
+  <nav class="rail__nav">
+    {
+      NAV.map((item) => {
+        const Icon = ICONS[item.icon as keyof typeof ICONS];
+        const current = isCurrent(item.href);
+        return (
+          <a
+            class="rail__item"
+            href={item.href}
+            aria-current={current ? 'page' : undefined}
+            title={`${item.label} — ${item.summary}`}
+          >
+            <Icon size={19} stroke-width={1.5} />
+            <span class="rail__label">{item.label}</span>
+            <span class="rail__kicker">{item.kicker}</span>
+          </a>
+        );
+      })
+    }
+  </nav>
+
+  <div class="rail__foot">
+    <a
+      class="rail__ext"
+      href={LINKS.bilibili.oxygenNine.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={`B 站 · @${LINKS.bilibili.oxygenNine.name}（新窗口打开）`}
+      aria-label={`B 站账号 ${LINKS.bilibili.oxygenNine.name}（新窗口打开）`}
+    >
+      <MonitorPlay size={18} stroke-width={1.5} />
+    </a>
+    <button
+      class="rail__ext"
+      type="button"
+      data-copy-qq={LINKS.qqGroup}
+      title={`复制 QQ 群号 ${LINKS.qqGroup}`}
+      aria-label={`复制 2027 新春会 QQ 群号 ${LINKS.qqGroup}`}
+    >
+      <Users size={18} stroke-width={1.5} />
+    </button>
+  </div>
+</aside>
+
+<header class="topbar">
+  <a class="topbar__brand" href="/" aria-label="返回首页">
+    <BrandMark name="scp" />
+    <span class="topbar__title">新春会</span>
+  </a>
+  <div class="topbar__ext">
+    <a
+      class="rail__ext"
+      href={LINKS.bilibili.oxygenNine.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`B 站账号 ${LINKS.bilibili.oxygenNine.name}（新窗口打开）`}
+    >
+      <MonitorPlay size={18} stroke-width={1.5} />
+    </a>
+    <button
+      class="rail__ext"
+      type="button"
+      data-copy-qq={LINKS.qqGroup}
+      aria-label={`复制 2027 新春会 QQ 群号 ${LINKS.qqGroup}`}
+    >
+      <Users size={18} stroke-width={1.5} />
+    </button>
+  </div>
+</header>
+
+<div class="copy-toast" role="status" aria-live="polite" data-copy-toast></div>
+
+<style>
+  .copy-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 88px;
+    transform: translateX(-50%) translateY(6px);
+    z-index: 60;
+    padding: 0.6em 1.1em;
+    background: var(--surface-3);
+    border: 1px solid var(--line-3);
+    border-radius: var(--r-xs);
+    color: var(--gold-hi);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--t);
+  }
+
+  .copy-toast[data-show] {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 960px) {
+    .copy-toast {
+      bottom: 78px;
+    }
+  }
+</style>

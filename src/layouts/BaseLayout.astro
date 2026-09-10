@@ -1,0 +1,83 @@
+---
+import '../styles/global.css';
+import Sidebar from '../components/Sidebar.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { SITE } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** 追加到 <title> 前的页面前缀 */
+  pageTitle?: string;
+}
+
+const {
+  pageTitle,
+  title = pageTitle ? `${pageTitle} · ${SITE.title}` : SITE.title,
+  description = SITE.description,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0e0709" />
+    <meta name="generator" content={Astro.generator} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="zh_CN" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fontsapi.zeoseven.com" />
+    <link rel="stylesheet" href="https://fontsapi.zeoseven.com/92/main/result.css" />
+    <link rel="stylesheet" href="https://fontsapi.zeoseven.com/69/main/result.css" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">跳到正文</a>
+    <Sidebar />
+    <div class="main" id="main">
+      <slot />
+      <SiteFooter />
+    </div>
+
+    <script>
+      // QQ 群号复制：不含任何个人联系方式
+      const toast = document.querySelector<HTMLElement>('[data-copy-toast]');
+      let timer: number | undefined;
+
+      const showToast = (text: string) => {
+        if (!toast) return;
+        toast.textContent = text;
+        toast.setAttribute('data-show', '');
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => toast.removeAttribute('data-show'), 2200);
+      };
+
+      document.querySelectorAll<HTMLElement>('[data-copy-qq]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const value = btn.dataset.copyQq ?? '';
+          try {
+            await navigator.clipboard.writeText(value);
+            showToast(`已复制 QQ 群号 ${value}`);
+          } catch {
+            showToast(`QQ 群号：${value}`);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

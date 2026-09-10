@@ -1,0 +1,65 @@
+/* ==========================================================================
+   Design tokens — SCP 中文分部新春会
+   基调：墨红底 + 极细金线。金只用于结构线与标记，不做大面积填充。
+   ========================================================================== */
+
+:root {
+  /* ---- 表面：近黑墨红，逐级抬亮 ---- */
+  --bg: #0e0709;
+  --bg-alt: #140a0d;
+  --surface: #180c10;
+  --surface-2: #1e0f14;
+  --surface-3: #261219;
+
+  /* ---- 金：结构线、编号、标记 ---- */
+  --gold: #c9a227;
+  --gold-hi: #e7cb82;
+  --gold-lo: #8a6c1b;
+  --line: rgba(201, 162, 39, 0.14);
+  --line-2: rgba(201, 162, 39, 0.26);
+  --line-3: rgba(201, 162, 39, 0.46);
+
+  /* ---- 猩红：仅用于强调与截止点 ---- */
+  --crimson: #a11f28;
+  --crimson-hi: #d0454b;
+  --crimson-dim: rgba(161, 31, 40, 0.22);
+
+  /* ---- 文字：骨白，偏暖 ---- */
+  --fg: #ece3d6;
+  --fg-2: #b0a291;
+  --fg-3: #7d7265;
+  --fg-4: #574d44;
+
+  /* ---- 排版 ---- */
+  --font-display: 'Smiley Sans Oblique', 'Noto Sans CJK', system-ui, sans-serif;
+  --font-text: 'Noto Sans CJK', 'Source Han Sans SC', system-ui, -apple-system,
+    'Segoe UI', 'Microsoft YaHei', sans-serif;
+
+  --step-display: clamp(3.25rem, 8.4vw, 7.5rem);
+  --step-h1: clamp(2.1rem, 4.6vw, 3.4rem);
+  --step-h2: clamp(1.5rem, 2.6vw, 2.1rem);
+  --step-h3: clamp(1.05rem, 1.5vw, 1.25rem);
+  --step-body: clamp(0.95rem, 1.05vw, 1rem);
+  --step-small: 0.83rem;
+  --step-micro: 0.68rem;
+
+  /* ---- 节奏 ---- */
+  --rail: 88px;
+  --gutter: clamp(20px, 4vw, 56px);
+  --shell: 1240px;
+  --section-y: clamp(64px, 9vw, 128px);
+
+  /* ---- 形状：近乎直角，避免大圆角 ---- */
+  --r-xs: 2px;
+  --r-sm: 3px;
+
+  /* ---- 动效：只动颜色与线，不动位置 ---- */
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --t: 160ms var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t: 0ms;
+  }
+}

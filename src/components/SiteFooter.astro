@@ -1,0 +1,78 @@
+---
+import BrandMark from './BrandMark.astro';
+import { SITE, LINKS, NAV } from '../data/site';
+---
+
+<footer class="foot">
+  <div class="shell">
+    <div class="foot__grid">
+      <div class="foot__col">
+        <div class="foot__brand">
+          <BrandMark name="ceremony-2027" />
+          <span class="foot__brandline">{SITE.title}</span>
+        </div>
+        <p class="dim" style="font-size: var(--step-small); max-width: 34ch;">
+          由 SCP 基金会中文分部社群创作者共同制作。{SITE.edition}新春会正在筹备，欢迎加入投稿。
+        </p>
+      </div>
+
+      <div class="foot__col">
+        <h3>站内</h3>
+        <ul>
+          {
+            NAV.map((item) => (
+              <li>
+                <a class="link" href={item.href}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="foot__col">
+        <h3>外部</h3>
+        <ul>
+          <li>
+            <a
+              class="link"
+              href={LINKS.bilibili.foundCeremony.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              B 站 · @{LINKS.bilibili.foundCeremony.name}
+            </a>
+          </li>
+          <li>
+            <a
+              class="link"
+              href={LINKS.bilibili.oxygenNine.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              B 站 · @{LINKS.bilibili.oxygenNine.name}
+            </a>
+          </li>
+          <li>
+            <button
+              class="link"
+              type="button"
+              data-copy-qq={LINKS.qqGroup}
+              style="text-align: left;"
+            >
+              2027 新春会 QQ 群 · {LINKS.qqGroup}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot__legal">
+      <span>
+        本站为社群自发的活动网站，与任何商业主体无关。SCP 基金会相关内容遵循 CC BY-SA 3.0 协议。
+      </span>
+      <span>页面数据取自 B 站公开接口，统计时间 2026-09-10。</span>
+    </div>
+  </div>
+</footer>

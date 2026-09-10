@@ -1,0 +1,174 @@
+---
+/**
+ * 倒计时。目标时刻由外层传入，脚本在浏览器端每秒刷新。
+ * 服务端先渲染一份静态占位，避免首屏空白（也保证 JS 关闭时仍有可读内容）。
+ */
+interface Props {
+  /** ISO 8601 时刻 */
+  target: string;
+  /** 到达目标后的文案 */
+  doneLabel?: string;
+  label?: string;
+}
+
+const { target, doneLabel = '已发布', label = '距离首播' } = Astro.props;
+const y = target.slice(0, 4);
+const mo = target.slice(5, 7);
+const d = target.slice(8, 10);
+---
+
+<div class="cd" data-countdown data-target={target} data-done={doneLabel}>
+  <span class="cd__label micro">{label}</span>
+
+  <div class="cd__row" role="timer" aria-live="off">
+    <div class="cd__unit">
+      <span class="cd__num tnum" data-cd="d">--</span>
+      <span class="cd__cap">天</span>
+    </div>
+    <span class="cd__sep" aria-hidden="true"></span>
+    <div class="cd__unit">
+      <span class="cd__num tnum" data-cd="h">--</span>
+      <span class="cd__cap">时</span>
+    </div>
+    <span class="cd__sep" aria-hidden="true"></span>
+    <div class="cd__unit">
+      <span class="cd__num tnum" data-cd="m">--</span>
+      <span class="cd__cap">分</span>
+    </div>
+    <span class="cd__sep" aria-hidden="true"></span>
+    <div class="cd__unit">
+      <span class="cd__num tnum" data-cd="s">--</span>
+      <span class="cd__cap">秒</span>
+    </div>
+  </div>
+
+  <p class="cd__date">
+    目标时刻 <span class="tnum">{y}-{mo}-{d}（北京时间）</span>
+  </p>
+</div>
+
+<script>
+  const nodes = document.querySelectorAll<HTMLElement>('[data-countdown]');
+
+  const pad = (n: number, w = 2) => String(n).padStart(w, '0');
+
+  const tick = () => {
+    const now = Date.now();
+    nodes.forEach((root) => {
+      const target = root.dataset.target ?? '';
+      const end = new Date(target).getTime();
+      if (Number.isNaN(end)) return;
+
+      const left = end - now;
+      const row = root.querySelector<HTMLElement>('.cd__row');
+
+      if (left <= 0) {
+        root.setAttribute('data-elapsed', '');
+        if (row) row.hidden = true;
+        const dateLine = root.querySelector<HTMLElement>('.cd__date');
+        if (dateLine) dateLine.textContent = root.dataset.done ?? '已发布';
+        return;
+      }
+
+      const s = Math.floor(left / 1000);
+      const map: Record<string, number> = {
+        d: Math.floor(s / 86400),
+        h: Math.floor((s % 86400) / 3600),
+        m: Math.floor((s % 3600) / 60),
+        s: s % 60,
+      };
+      for (const [key, value] of Object.entries(map)) {
+        const el = root.querySelector<HTMLElement>(`[data-cd="${key}"]`);
+        if (el) el.textContent = pad(value, key === 'd' ? 3 : 2);
+      }
+    });
+  };
+
+  if (nodes.length) {
+    tick();
+    window.setInterval(tick, 1000);
+  }
+</script>
+
+<style>
+  .cd {
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--surface);
+    padding: clamp(18px, 2.4vw, 28px);
+  }
+
+  .cd__label {
+    display: block;
+    margin-bottom: 14px;
+  }
+
+  .cd__row {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(8px, 1.6vw, 22px);
+    flex-wrap: nowrap;
+  }
+
+  .cd__unit {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+  }
+
+  .cd__num {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 4.4vw, 3.4rem);
+    line-height: 1;
+    color: var(--gold);
+  }
+
+  .cd__cap {
+    font-size: 0.72rem;
+    color: var(--fg-3);
+    letter-spacing: 0.08em;
+  }
+
+  .cd__sep {
+    width: 1px;
+    height: 22px;
+    background: var(--line-2);
+    align-self: center;
+  }
+
+  .cd__date {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 0.76rem;
+    color: var(--fg-3);
+    letter-spacing: 0.04em;
+  }
+
+  .cd[data-elapsed] .cd__num {
+    color: var(--fg-3);
+  }
+
+  /* 窄屏：缩小字号并去掉分隔线，避免数字与单位被迫换行 */
+  @media (max-width: 560px) {
+    .cd__row {
+      gap: 10px;
+    }
+
+    .cd__num {
+      font-size: clamp(1.5rem, 7.6vw, 2.1rem);
+    }
+
+    .cd__unit {
+      gap: 4px;
+    }
+
+    .cd__cap {
+      font-size: 0.64rem;
+    }
+
+    .cd__sep {
+      display: none;
+    }
+  }
+</style>

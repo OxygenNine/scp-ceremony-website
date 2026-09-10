@@ -1,0 +1,548 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Countdown from '../components/Countdown.astro';
+import Timeline from '../components/Timeline.astro';
+import BrandMark from '../components/BrandMark.astro';
+import { Lock, ArrowRight, Users, CircleDot } from '@lucide/astro';
+import { CEREMONY_PREMIERE, SUBMISSION_DEADLINE, LINKS } from '../data/site';
+import { TEAM, MASCOT, PRODUCTION } from '../data/team';
+
+const facts = [
+  { label: '首播日期', value: '2027.02.05' },
+  { label: '投稿截稿', value: '2027.01.01' },
+  { label: '计划收录', value: `${PRODUCTION.programTarget} 个` },
+  { label: '审核组规模', value: PRODUCTION.reviewers },
+];
+
+/** 观看地址占位：直播与正片两个入口都尚未公布 */
+const slots = [
+  {
+    title: '正片首播',
+    caption: 'Premiere',
+    body: '正片将在 2027 年 2 月 5 日除夕当天发布，届时以主办方公告的发布时间为准。',
+    meta: '发布平台 · B 站',
+  },
+  {
+    title: '同步直播',
+    caption: 'Livestream',
+    body: '若条件允许将同步进行直播，具体形式与房间号尚未确定，确定后在此公布。',
+    meta: '状态 · 待定',
+  },
+];
+
+/** 仍在推进、尚未定案的事项。只列名称，不写内部方案。 */
+const pending = [
+  { title: '审核组名单', body: '约 7 ~ 8 人，涵盖不同 SCP 社群，具体人员确定后公布。' },
+  { title: '致辞嘉宾名单', body: '正在联络不同社区的嘉宾，名单确定后公布。' },
+  { title: '主线故事与小剧场', body: '主线方向已确定具备背景故事，途中穿插小剧场呼应，具体内容仍在创作中。' },
+  { title: '大合唱环节', body: '片尾大合唱的曲目仍在确定中。' },
+  { title: '互动环节', body: '形式仍在评估，确定后随节目单一同公布。' },
+];
+---
+
+<BaseLayout
+  pageTitle="2027 筹备"
+  description="SCP 基金会中文分部 2027 新春会筹备进度：倒计时、完整时间轴、主办方分工与观看地址占位。投稿开放至 2027 年 1 月 1 日。"
+>
+  <PageHeader
+    kicker="In Progress · 2027"
+    title="2027 新春会筹备中"
+    lede="第二届新春会已于 2026 年 9 月启动筹备。本页汇总目前已确定的全部公开信息：时间轴、观看方式与主办分工。尚未定案的事项会在下文如实标注，不作提前发布。"
+    facts={facts}
+    mark="ceremony-2027"
+    texture="hexagons"
+  />
+
+  <div class="shell">
+    <!-- 01 倒计时与观看地址 -->
+    <section class="section">
+      <SectionHead
+        index="01"
+        kicker="Where to Watch"
+        title="观看地址"
+        note="两个入口都还没到公布的时候。下方倒计时指向企划书确定的发布日 2027 年 2 月 5 日；首播的具体时刻以届时公告为准。"
+      />
+
+      <div class="watch">
+        <div class="watch__slots">
+          {
+            slots.map((s) => (
+              <article class="slot" data-pending>
+                <span class="slot__lock" aria-hidden="true">
+                  <Lock size={15} stroke-width={1.5} />
+                </span>
+                <span class="slot__caption micro micro--dim">{s.caption}</span>
+                <h3 class="slot__title">{s.title}</h3>
+                <p class="slot__body">{s.body}</p>
+                <span class="slot__meta">{s.meta}</span>
+                <span class="slot__badge">待公布</span>
+              </article>
+            ))
+          }
+        </div>
+
+        <Countdown
+          target={CEREMONY_PREMIERE}
+          label="距离 2027 新春会首播"
+          doneLabel="2027 新春会已发布"
+        />
+      </div>
+    </section>
+
+    <!-- 02 时间轴 -->
+    <section class="section">
+      <SectionHead
+        index="02"
+        kicker="Timeline"
+        title="完整时间轴"
+        note="企划书确定的六个节点。标注「截止」的一项需要投稿者特别留意。"
+      />
+      <Timeline />
+      <p class="callout">
+        <CircleDot size={15} stroke-width={1.8} />
+        <span>
+          作品须在 <strong class="tnum">2027 年 1 月 1 日 00:00</strong> 前完成上传，逾期不候。如需申请额外时长或因特殊情况延期，请在 QQ
+          群内联系主办方单独沟通。
+        </span>
+      </p>
+    </section>
+
+    <!-- 03 主办方 -->
+    <section class="section">
+      <SectionHead
+        index="03"
+        kicker="Organizers"
+        title="主办方分工"
+        note="五位主办成员及其负责范围。投稿与咨询请优先通过 QQ 群进行。"
+      />
+
+      <ul class="team">
+        {
+          TEAM.map((m) => (
+            <li class="team__row">
+              <span class="team__role">{m.role}</span>
+              <span class="team__name">
+                {m.handle}
+                <span class="team__alias">{m.alias}</span>
+              </span>
+              <span class="team__detail">{m.detail}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- 04 规模与设定 -->
+    <section class="section">
+      <SectionHead
+        index="04"
+        kicker="Format"
+        title="本届规模与设定"
+        note="已确定的制作参数。"
+      />
+
+      <div class="spec">
+        <article class="spec__card spec__card--mascot">
+          <span class="micro micro--dim">吉祥物</span>
+          <div class="spec__mascot">
+            <div class="spec__mascotMark">
+              <BrandMark name="ceremony-2027" />
+            </div>
+            <div>
+              <p class="spec__mascotName">{MASCOT.name}</p>
+              <p class="spec__mascotNote">{MASCOT.detail}</p>
+            </div>
+          </div>
+          <p class="spec__pending">形象图尚未公开</p>
+        </article>
+
+        <dl class="spec__list">
+          <div class="spec__item">
+            <dt>收录规模</dt>
+            <dd>{PRODUCTION.programNote}</dd>
+          </div>
+          <div class="spec__item">
+            <dt>审核组</dt>
+            <dd>{PRODUCTION.reviewerNote}</dd>
+          </div>
+          <div class="spec__item">
+            <dt>开场</dt>
+            <dd>正片以开场混剪起头，该环节由主办方统一制作。</dd>
+          </div>
+          <div class="spec__item">
+            <dt>特别环节</dt>
+            <dd>新春贺词由主办方定向安排，不在公开投稿范围内。</dd>
+          </div>
+          <div class="spec__item">
+            <dt>片尾报幕</dt>
+            <dd>创作者的制作人员名单与新春祝福由主办方在片尾统一播放，无需自行加入视频内。</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 05 待定 -->
+    <section class="section">
+      <SectionHead
+        index="05"
+        kicker="Pending"
+        title="仍在筹备中"
+        note="以下事项尚未定案，因此本页不作任何细节描述。确定后会在 B 站与 QQ 群同步公告。"
+      />
+      <ul class="pending">
+        {
+          pending.map((p) => (
+            <li class="pending__item">
+              <h3 class="pending__title">{p.title}</h3>
+              <p class="pending__body">{p.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- 06 参与 -->
+    <section class="section">
+      <SectionHead index="06" kicker="Take Part" title="投稿与咨询" note="" />
+      <div class="join">
+        <a class="join__card" href="/join/">
+          <span class="micro">投稿参与</span>
+          <span class="join__title">查看完整投稿要求</span>
+          <span class="join__body">交付格式、内容红线、节目类型、时长与数量限制。</span>
+          <ArrowRight size={16} stroke-width={1.6} />
+        </a>
+        <div class="join__card join__card--static">
+          <span class="micro">QQ 群</span>
+          <span class="join__title tnum">{LINKS.qqGroup}</span>
+          <span class="join__body">报名、共创表格与作品交付都在群内进行。</span>
+          <button class="btn" type="button" data-copy-qq={LINKS.qqGroup}>
+            <Users size={15} stroke-width={1.5} />
+            复制群号
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* ---- 观看地址 ---- */
+  .watch {
+    display: grid;
+    gap: 18px;
+  }
+
+  .watch__slots {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  /* 占位卡：虚线框 + 明显区别于已上线内容 */
+  .slot {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: clamp(20px, 2.6vw, 28px);
+    border: 1px dashed var(--line-2);
+    border-radius: var(--r-xs);
+    background: var(--surface);
+  }
+
+  .slot__lock {
+    color: var(--fg-4);
+    margin-bottom: 4px;
+  }
+
+  .slot__title {
+    font-size: 1.2rem;
+    color: var(--fg-2);
+  }
+
+  .slot__body {
+    font-size: var(--step-small);
+    line-height: 1.9;
+    color: var(--fg-3);
+    flex: 1 1 auto;
+  }
+
+  .slot__meta {
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 0.74rem;
+    color: var(--fg-4);
+    letter-spacing: 0.04em;
+  }
+
+  .slot__badge {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    padding: 2px 8px;
+    color: var(--gold-lo);
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-xs);
+  }
+
+  /* ---- 截止提示 ---- */
+  .callout {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 26px;
+    padding: 16px 20px;
+    border-left: 2px solid var(--crimson);
+    background: var(--surface);
+    font-size: var(--step-small);
+    line-height: 1.9;
+    color: var(--fg-2);
+  }
+
+  .callout :global(svg) {
+    flex: 0 0 auto;
+    margin-top: 5px;
+    color: var(--crimson-hi);
+  }
+
+  /* 截止日期加重，其余保持常规字重 */
+  .callout strong {
+    color: var(--fg);
+    font-weight: 600;
+  }
+
+  /* ---- 主办方 ---- */
+  .team {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .team__row {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: 20px;
+    align-items: baseline;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    transition: background-color var(--t);
+  }
+
+  .team__row:hover {
+    background: var(--surface);
+  }
+
+  .team__role {
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+  }
+
+  .team__name {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--fg);
+  }
+
+  .team__alias {
+    margin-left: 10px;
+    font-family: var(--font-text);
+    font-size: 0.76rem;
+    color: var(--fg-3);
+    letter-spacing: 0.04em;
+  }
+
+  .team__detail {
+    font-size: var(--step-small);
+    color: var(--fg-2);
+    line-height: 1.85;
+  }
+
+  /* ---- 规模与设定 ---- */
+  .spec {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .spec__card {
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--surface);
+    padding: clamp(20px, 2.6vw, 28px);
+  }
+
+  .spec__mascot {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 0 0;
+  }
+
+  .spec__mascotMark {
+    flex: 0 0 auto;
+    width: 54px;
+    color: var(--gold);
+    opacity: 0.55;
+  }
+
+  .spec__mascotName {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    color: var(--fg);
+    line-height: 1.2;
+    margin-bottom: 3px;
+  }
+
+  .spec__mascotNote {
+    font-size: var(--step-small);
+    color: var(--fg-2);
+  }
+
+  .spec__pending {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--fg-4);
+  }
+
+  .spec__list {
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .spec__item {
+    padding: 15px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .spec__item dt {
+    font-size: 0.76rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 5px;
+  }
+
+  .spec__item dd {
+    margin: 0;
+    font-size: var(--step-small);
+    line-height: 1.9;
+    color: var(--fg-2);
+    max-width: 66ch;
+  }
+
+  /* ---- 待定 ---- */
+  .pending {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .pending__item {
+    padding: 22px 20px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pending__title {
+    font-size: 1.02rem;
+    color: var(--fg-2);
+    margin-bottom: 8px;
+  }
+
+  .pending__body {
+    font-size: 0.8rem;
+    line-height: 1.85;
+    color: var(--fg-3);
+  }
+
+  /* ---- 参与 ---- */
+  .join {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .join__card {
+    display: grid;
+    gap: 7px;
+    padding: clamp(20px, 2.6vw, 30px);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--surface);
+    transition: border-color var(--t), background-color var(--t);
+  }
+
+  .join__card:hover {
+    border-color: var(--line-3);
+    background: var(--surface-2);
+  }
+
+  .join__card :global(svg) {
+    margin-top: 10px;
+    color: var(--gold);
+    transition: transform var(--t);
+  }
+
+  .join__card:hover svg {
+    transform: translateX(3px);
+  }
+
+  .join__title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--fg);
+  }
+
+  .join__body {
+    font-size: var(--step-small);
+    color: var(--fg-2);
+    line-height: 1.8;
+  }
+
+  .join__card--static:hover {
+    border-color: var(--line);
+    background: var(--surface);
+  }
+
+  .join__card--static :global(svg) {
+    margin: 0;
+  }
+
+  .join__card--static .btn {
+    justify-self: start;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 980px) {
+    .watch,
+    .spec {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .watch__slots,
+    .join {
+      grid-template-columns: 1fr;
+    }
+
+    .team__row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+</style>

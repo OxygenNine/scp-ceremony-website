@@ -1,0 +1,159 @@
+---
+interface Props {
+  kicker: string;
+  title: string;
+  lede: string;
+  /** 右侧的补充统计 */
+  facts?: { label: string; value: string }[];
+  /** 页面主视觉用的官方标记名 */
+  mark?: 'ceremony-2026' | 'ceremony-2027';
+  /** 极低存在感的底纹（pattern.monster 下载的重复纹样） */
+  texture?: 'seigaiha' | 'asanoha' | 'hexagons';
+}
+
+import BrandMark from './BrandMark.astro';
+import seigaiha from '../assets/patterns/seigaiha.svg?raw';
+import asanoha from '../assets/patterns/asanoha.svg?raw';
+import hexagons from '../assets/patterns/hexagons.svg?raw';
+
+const TEXTURES = { seigaiha, asanoha, hexagons } as const;
+
+const { kicker, title, lede, facts = [], mark, texture } = Astro.props;
+---
+
+<header class="ph">
+  {texture && <div class="texture" aria-hidden="true" set:html={TEXTURES[texture]} />}
+
+  <div class="shell ph__shell">
+    <div class="ph__main">
+      <span class="micro ph__kicker">{kicker}</span>
+      <h1 class="ph__title">{title}</h1>
+      <p class="ph__lede">{lede}</p>
+    </div>
+
+    {
+      mark && (
+        <div class="ph__mark" aria-hidden="true">
+          <BrandMark name={mark} />
+        </div>
+      )
+    }
+  </div>
+
+  {
+    facts.length > 0 && (
+      <div class="shell">
+        <dl class="ph__facts">
+          {facts.map((f) => (
+            <div class="ph__fact">
+              <dt class="ph__factValue tnum">{f.value}</dt>
+              <dd class="ph__factLabel">{f.label}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    )
+  }
+</header>
+
+<style>
+  .ph {
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    padding-block: clamp(40px, 6vw, 84px);
+    background: var(--bg-alt);
+    overflow: hidden;
+  }
+
+  /* 每个页头一层极淡的纹样，向右下淡出，只做肌理 */
+  .ph .texture {
+    color: var(--gold);
+    opacity: 0.035;
+    -webkit-mask-image: linear-gradient(105deg, #000 0%, transparent 62%);
+    mask-image: linear-gradient(105deg, #000 0%, transparent 62%);
+  }
+
+  .ph__shell {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: clamp(24px, 5vw, 64px);
+  }
+
+  /* 事实条同样压在纹样之上 */
+  .ph > .shell {
+    position: relative;
+    z-index: 1;
+  }
+
+  .ph__main {
+    max-width: 62ch;
+  }
+
+  .ph__kicker {
+    display: block;
+    margin-bottom: 18px;
+  }
+
+  .ph__title {
+    font-size: var(--step-h1);
+    margin-bottom: 20px;
+  }
+
+  .ph__lede {
+    font-size: clamp(0.98rem, 1.25vw, 1.08rem);
+    line-height: 1.95;
+    color: var(--fg-2);
+  }
+
+  .ph__mark {
+    flex: 0 0 auto;
+    width: clamp(96px, 12vw, 150px);
+    color: var(--gold);
+    opacity: 0.9;
+  }
+
+  /* 事实条：同一条 hairline 栅格，不额外套卡片 */
+  .ph__facts {
+    margin: clamp(30px, 4vw, 48px) 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .ph__fact {
+    padding: 16px 18px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .ph__factValue {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+    color: var(--gold);
+    line-height: 1.2;
+    margin: 0 0 5px;
+  }
+
+  .ph__factLabel {
+    margin: 0;
+    font-size: 0.76rem;
+    color: var(--fg-3);
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 820px) {
+    .ph__shell {
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    .ph__mark {
+      order: -1;
+      width: 84px;
+    }
+  }
+</style>

@@ -1,0 +1,21 @@
+{
+  "name": "scp-ceremony-website",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SCP 基金会中文分部 2027 新春会官方网站",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@lucide/astro": "^1.44.0",
+    "astro": "^7.3.2"
+  },
+  "devDependencies": {
+    "svgo": "^4.1.0"
+  }
+}

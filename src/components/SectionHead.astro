@@ -1,0 +1,68 @@
+---
+interface Props {
+  /** 章节编号，例如 "01" */
+  index: string;
+  /** 拉丁眉标 */
+  kicker: string;
+  title: string;
+  /** 右侧补充说明 */
+  note?: string;
+  id?: string;
+}
+
+const { index, kicker, title, note, id } = Astro.props;
+---
+
+<header class="head" id={id}>
+  <div>
+    <span class="micro head__idx">
+      <span class="tnum">{index}</span>
+      <span class="head__dash" aria-hidden="true"></span>
+      {kicker}
+    </span>
+    <h2 class="head__title">{title}</h2>
+  </div>
+  {note && <p class="head__note">{note}</p>}
+</header>
+
+<style>
+  .head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(20px, 4vw, 64px);
+    align-items: end;
+    margin-bottom: clamp(28px, 4vw, 52px);
+  }
+
+  .head__idx {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .head__dash {
+    width: 26px;
+    height: 1px;
+    background: var(--line-3);
+  }
+
+  .head__title {
+    font-size: var(--step-h2);
+  }
+
+  .head__note {
+    color: var(--fg-2);
+    font-size: var(--step-small);
+    line-height: 1.95;
+    padding-bottom: 0.35rem;
+  }
+
+  @media (max-width: 820px) {
+    .head {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+  }
+</style>

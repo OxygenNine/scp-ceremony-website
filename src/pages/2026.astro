@@ -1,0 +1,197 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SectionHead from '../components/SectionHead.astro';
+import VideoCard from '../components/VideoCard.astro';
+import { FEATURE, OFFICIAL, PIECES, ARCHIVE_STATS } from '../data/videos';
+import { LINKS } from '../data/site';
+import { durationText, views } from '../lib/format';
+import { ArrowRight, MonitorPlay } from '@lucide/astro';
+
+const facts = [
+  { label: '正片时长', value: durationText(ARCHIVE_STATS.featureDuration) },
+  { label: 'B 站播放', value: views(ARCHIVE_STATS.featureViews) },
+  { label: '归档单品', value: `${ARCHIVE_STATS.pieceCount} 个` },
+  { label: '参与作者', value: `${ARCHIVE_STATS.contributors} 位` },
+];
+---
+
+<BaseLayout
+  pageTitle="2026 回看"
+  description="SCP 基金会中文分部 2026 首届新春会正片、预告与单品归档，含 B 站播放地址。"
+>
+  <PageHeader
+    kicker="Archive · 2026"
+    title="2026 首届新春会"
+    lede="第一届新春会于 2026 年除夕上线，全长 3 小时 59 分，在 B 站获得 24.2 万播放。本页归档正片、官方预告与可考的单品作品，全部可直接跳转到 B 站观看。"
+    facts={facts}
+    mark="ceremony-2026"
+    texture="asanoha"
+  />
+
+  <div class="shell">
+    <section class="section">
+      <SectionHead
+        index="01"
+        kicker="Feature"
+        title="正片"
+        note="全片在 B 站免费公开。若想先看节目单，正片简介与分 P 章节都有整理。"
+      />
+      <VideoCard video={FEATURE} variant="feature" />
+      <p class="act">
+        <a class="btn" href={FEATURE.url} target="_blank" rel="noopener noreferrer">
+          <MonitorPlay size={15} stroke-width={1.6} />
+          在 B 站观看正片
+        </a>
+      </p>
+    </section>
+
+    <section class="section">
+      <SectionHead
+        index="02"
+        kicker="Official"
+        title="官方发布"
+        note="征稿公告、定档预告与新春贺词，均由主办方账号发布。"
+      />
+      <div class="grid grid--3">
+        {OFFICIAL.map((v) => <VideoCard video={v} />)}
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionHead
+        index="03"
+        kicker="Pieces"
+        title="单品归档"
+        note="收录标准：标题或简介中自行标注为「2026 新春会单品 / 节目」的作品。未自我标注的同期投稿一律不收录——宁可少收，也不误收。"
+      />
+
+      <div class="grid grid--4">
+        {PIECES.map((v) => <VideoCard video={v} />)}
+      </div>
+
+      <p class="note">
+        以上 {PIECES.length} 个作品均由创作者自行发布，版权归各自作者所有。部分作品在 B 站受到限流，直接搜索标题可能不易找到，建议通过站内链接进入。
+      </p>
+    </section>
+
+    <section class="section">
+      <SectionHead
+        index="04"
+        kicker="Next"
+        title="下一届"
+        note="2027 新春会的投稿通道开放至 2027 年 1 月 1 日 00:00。"
+      />
+      <div class="next">
+        <a class="next__card" href="/2027/">
+          <span class="micro">2027 筹备</span>
+          <span class="next__title">查看本届进度</span>
+          <span class="next__body">时间轴、主办方与倒计时。</span>
+          <ArrowRight size={16} stroke-width={1.6} />
+        </a>
+        <a class="next__card" href="/join/">
+          <span class="micro">投稿参与</span>
+          <span class="next__title">查看投稿要求</span>
+          <span class="next__body">交付格式、内容红线、节目类型与时长。</span>
+          <ArrowRight size={16} stroke-width={1.6} />
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  .grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .act {
+    margin-top: 22px;
+  }
+
+  .note {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 0.78rem;
+    line-height: 1.9;
+    color: var(--fg-3);
+    max-width: 80ch;
+  }
+
+  .next {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .next__card {
+    display: grid;
+    gap: 7px;
+    padding: clamp(20px, 2.6vw, 30px);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--surface);
+    transition: border-color var(--t), background-color var(--t);
+  }
+
+  .next__card:hover {
+    border-color: var(--line-3);
+    background: var(--surface-2);
+  }
+
+  .next__card :global(svg) {
+    margin-top: 8px;
+    color: var(--gold);
+    transition: transform var(--t);
+  }
+
+  .next__card:hover svg {
+    transform: translateX(3px);
+  }
+
+  .next__title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--fg);
+  }
+
+  .next__body {
+    font-size: var(--step-small);
+    color: var(--fg-2);
+    line-height: 1.8;
+  }
+
+  @media (max-width: 1080px) {
+    .grid--4 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 900px) {
+    .grid--3,
+    .grid--4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .next {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .grid--3,
+    .grid--4 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

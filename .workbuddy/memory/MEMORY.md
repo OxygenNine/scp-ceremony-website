@@ -13,7 +13,7 @@ SCP 基金会中文分部 2027 新春会的活动官网，同时归档 2026 首�
 3. **个人 QQ 号不外露**。联系入口只走 QQ 群（1108484636）+ B 站账号。
 4. **2026 单品的收录标准**：标题或简介里自行标注为「新春会单品 / 节目」的才收。未自我标注的同期投稿不收，宁可少收。
 5. **不自己画 SVG**。图形一律用主办方提供的官方标识文件（原件备份在 `.workbuddy/source-assets/`）或公共素材站下载物。
-6. **本地预览必须用 `http://localhost:<port>`**，不能用 `127.0.0.1`——ZeoSeven 字体 CDN 会拒绝字面 IP 来源，返 204 空样式表，且不报错。
+6. **字体 CDN 的 Referer 已在代码层解掉**：ZeoSeven 会对字面 IP 来源返回 204 空样式表（字体静默回退、控制台无报错）。`BaseLayout.astro` 里的 `<meta name="referrer" content="no-referrer">` 负责去掉 Referer，改动 head 时别删。排查字体问题时先看这条，别怀疑沙箱。
 7. 浏览器自动化核验走 msedge（Playwright `channel="msedge"`），回归脚本在 `.workbuddy/tmp/e2e_check.py`，改完页面要跑一遍。
 
 ## 设计系统

@@ -40,10 +40,24 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+    <!--
+      字体 CDN（ZeoSeven Fonts）会对字面 IP 来源直接返回 204 空样式表，
+      导致字体静默回退且控制台无报错。这里统一不带 Referer，
+      使 localhost / 127.0.0.1 / 任意域名下的表现一致。
+    -->
+    <meta name="referrer" content="no-referrer" />
     <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
     <link rel="dns-prefetch" href="https://fontsapi.zeoseven.com" />
-    <link rel="stylesheet" href="https://fontsapi.zeoseven.com/92/main/result.css" />
-    <link rel="stylesheet" href="https://fontsapi.zeoseven.com/69/main/result.css" />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/92/main/result.css"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/69/main/result.css"
+      referrerpolicy="no-referrer"
+    />
   </head>
 
   <body>

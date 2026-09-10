@@ -13,9 +13,10 @@ npm run build    # 输出到 dist/
 npm run preview
 ```
 
-> 预览请用 `http://localhost:4321`，**不要用 `http://127.0.0.1:4321`**。
-> 字体 CDN（ZeoSeven Fonts）会拒绝字面 IP 来源的请求并返回 204，导致字体全部回退到系统字体。
-> 这个规则只在本地生效，正式域名不受影响。
+> 预览用 `http://localhost:4321` 或 `http://127.0.0.1:4321` 都可以。
+> 字体 CDN（ZeoSeven Fonts）会拒绝字面 IP 来源的请求并返回 204 空样式表，导致字体全部静默回退且控制台不报错。
+> `BaseLayout.astro` 里已经用 `<meta name="referrer" content="no-referrer">` 把 Referer 去掉，两种主机名下表现一致。
+> 如果改动 head 时删掉了这一行，`127.0.0.1` 下字体会掉回系统字体。
 
 ## 目录
 

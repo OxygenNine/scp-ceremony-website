@@ -79,4 +79,14 @@ export const ANNOUNCEMENTS: Announcement[] = [
       },
     ],
   },
+  {
+    id: '2026-rollout',
+    date: '2026-02-16',
+    label: '2026.02.16',
+    kind: 'event',
+    title: '2026 首届新春会发布',
+    body: [
+      '2026 首届新春会正式发布。',
+    ],
+  },
 ];

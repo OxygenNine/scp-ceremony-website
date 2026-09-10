@@ -28,5 +28,7 @@ desktop.ini
 !.vscode/extensions.json
 .idea/
 
-# 项目级 AI 上下文：临时脚本与截图不入库，保留 memory / scripts / source-assets
-.workbuddy/tmp/
+# AI Agents
+.workbuddy/
+.trae/
+.dsh/

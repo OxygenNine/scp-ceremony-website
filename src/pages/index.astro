@@ -6,7 +6,8 @@ import SectionHead from '../components/SectionHead.astro';
 import VideoCard from '../components/VideoCard.astro';
 import Timeline from '../components/Timeline.astro';
 import { ArrowRight, Users, FilePen, MonitorPlay, Copy } from '@lucide/astro';
-import { FEATURE, PIECES, ARCHIVE_STATS } from '../data/videos';
+import { FEATURE, ARCHIVE_STATS } from '../data/videos';
+import { PROGRAM_STATS, MISSING, HOSTS } from '../data/program';
 import { PRODUCTION } from '../data/team';
 import { SUBMISSION_FACTS } from '../data/submission';
 import { LINKS, SITE } from '../data/site';
@@ -46,7 +47,6 @@ const entries = [
   },
 ];
 
-const highlights = PIECES.slice(0, 3);
 ---
 
 <BaseLayout>
@@ -109,17 +109,29 @@ const highlights = PIECES.slice(0, 3);
         index="02"
         kicker="Previous Edition"
         title="2026 首届新春会"
-        note="正片、预告与特别环节的完整归档，可在回看页查看全部单品。"
+        note="正片、官方物料与完整节目单都收在回看页，每一项都能直接跳到 B 站。"
       />
       <VideoCard video={FEATURE} variant="feature" />
 
-      <div class="roll">
-        {highlights.map((v) => <VideoCard video={v} />)}
-      </div>
+      <dl class="pstats">
+        {
+          [
+            { label: '收录单品', value: `${PROGRAM_STATS.count} 项` },
+            { label: '参与作者', value: `${PROGRAM_STATS.contributors} 位` },
+            { label: '未单独投稿', value: `${MISSING.length} 个` },
+            { label: '主持人', value: `${HOSTS.length} 位` },
+          ].map((s) => (
+            <div class="pstats__item">
+              <dt class="pstats__value tnum">{s.value}</dt>
+              <dd class="pstats__label">{s.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
 
       <p class="more">
         <a class="golink" href="/2026/">
-          查看 2026 全部归档（{ARCHIVE_STATS.pieceCount} 个单品）
+          查看 2026 完整节目单
           <ArrowRight size={14} stroke-width={1.8} />
         </a>
       </p>
@@ -249,12 +261,33 @@ const highlights = PIECES.slice(0, 3);
     margin-top: 3px;
   }
 
-  /* ---- 单品横排 ---- */
-  .roll {
+  /* ---- 节目单速览 ---- */
+  .pstats {
+    margin: 18px 0 0;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-    margin-top: 18px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .pstats__item {
+    padding: 18px 16px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pstats__value {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+    line-height: 1.15;
+    color: var(--gold);
+    margin: 0 0 6px;
+  }
+
+  .pstats__label {
+    margin: 0;
+    font-size: 0.76rem;
+    color: var(--fg-2);
   }
 
   .more {
@@ -305,15 +338,20 @@ const highlights = PIECES.slice(0, 3);
       grid-template-columns: 1fr;
     }
 
-    .roll,
     .entries {
       grid-template-columns: 1fr;
     }
   }
 
-  @media (min-width: 901px) and (max-width: 1100px) {
-    .roll {
+  @media (min-width: 561px) and (max-width: 900px) {
+    .pstats {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .pstats {
+      grid-template-columns: 1fr;
     }
   }
 </style>

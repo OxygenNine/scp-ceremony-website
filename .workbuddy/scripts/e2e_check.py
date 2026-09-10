@@ -18,7 +18,7 @@ import sys, re, json
 from playwright.sync_api import sync_playwright
 
 BASE = (sys.argv[1] if len(sys.argv) > 1 else "http://localhost:4321").rstrip("/")
-PAGES = ["/", "/2026/", "/2027/", "/join/"]
+PAGES = ["/", "/2026/", "/2027/", "/join/", "/announcement/"]
 
 # 真正的绘文字区段。U+2190–21FF（箭头）、U+2000–206F（通用标点）是正常排版字符，不算 emoji。
 EMOJI = re.compile(
@@ -210,6 +210,64 @@ with sync_playwright() as p:
     check("字标颜色为 --fg", rgb(styles["wordmark"]) == hex2rgb(styles["fg"]),
           "%s vs %s" % (styles["wordmark"], styles["fg"]))
     check("纹样不透明度为 0.07", styles["txtOpacity"] == "0.07", str(styles["txtOpacity"]))
+
+    print("\n== 10. 2026 节目单 ==")
+    page.goto(BASE + "/2026/", wait_until="load", timeout=60000)
+    page.wait_for_timeout(2500)
+    rows = page.eval_on_selector_all(".pl__row", "els => els.length")
+    check("节目单渲染 43 行", rows == 43, "rows=%d" % rows)
+
+    links = page.eval_on_selector_all(
+        ".pl__title a", "els => els.map(e => e.getAttribute('href'))")
+    check("每一行都有 B 站链接", len(links) == 43 and all(links), "n=%d" % len(links))
+    check("链接均指向 bilibili", all("bilibili.com/video/BV" in (h or "") for h in links))
+
+    thumbs = page.eval_on_selector_all(
+        ".pl__thumb img", "els => els.map(e => e.getAttribute('src'))")
+    bad_thumbs = []
+    for src in thumbs:
+        r = ctx.request.get(BASE + src, timeout=15000)
+        if r.status >= 400:
+            bad_thumbs.append("%s -> %s" % (src, r.status))
+    check("节目单缩略图全部可达（%d 张）" % len(thumbs), not bad_thumbs, "; ".join(bad_thumbs[:4]))
+
+    # 行内序号应与播放量降序一致
+    order = page.eval_on_selector_all(".pl__row", """els => els.map(e => {
+        const t = e.querySelector('.pl__meta').innerText;
+        const m = t.match(/([\\d.]+)\\s*万?/g);
+        return e.querySelector('.pl__no').innerText;
+    })""")
+    check("序号连续到 43", order[-1].strip() == "43", "last=%s" % order[-1])
+
+    body = page.inner_text("body")
+    for token in ["中分之歌", "堂吉诃德", "不秀海鸥", "组织篇", "异常篇", "至高神性篇"]:
+        check("节目单含「%s」" % token, token in body)
+    check("合并节目标注为「多篇合并」", "多篇合并" in body)
+    check("中分之歌标注为「AI 梗曲」", "AI 梗曲" in body)
+
+    miss = page.eval_on_selector_all(".ml__item", "els => els.length")
+    check("未单独投稿清单 15 条", miss == 15, "count=%d" % miss)
+    check("含抄袭处理说明与站内链接", "查看处理声明" in body and "/announcement/#2026-plagiarism" in page.content())
+
+    hosts = page.eval_on_selector_all(".hosts__name", "els => els.map(e => e.innerText.trim())")
+    check("主持人两位", hosts == ["阿雨不忘初心", "筱洛Serov"], str(hosts))
+
+    print("\n== 11. 公告栏 ==")
+    page.goto(BASE + "/announcement/", wait_until="load", timeout=60000)
+    page.wait_for_timeout(1200)
+    items = page.eval_on_selector_all(".an__item", "els => els.map(e => e.id)")
+    check("公告 3 条且带锚点 id", len(items) == 3 and "2026-plagiarism" in items, str(items))
+    txt = page.inner_text("body")
+    for token in ["2027 新春会宣传 PV 公开", "2027 新春会报名开放", "抄袭问题的处理声明", "MAKU_050"]:
+        check("公告含「%s」" % token, token in txt)
+    check("声明标注出处", "主办方 · FoundCeremony" in txt)
+
+    print("\n== 12. 导航 ==")
+    nav = page.eval_on_selector_all(".rail__item", "els => els.map(e => e.getAttribute('href'))")
+    check("侧栏 5 项且含公告", len(nav) == 5 and "/announcement/" in nav, str(nav))
+    check("公告页高亮正确",
+          page.eval_on_selector_all(".rail__item[aria-current='page']",
+                                    "els => els.map(e => e.getAttribute('href'))") == ["/announcement/"])
 
     browser.close()
 

@@ -90,4 +90,11 @@ export const NAV: NavItem[] = [
     icon: 'file-pen',
     summary: '报名方式与投稿要求',
   },
+  {
+    href: '/announcement/',
+    label: '公告',
+    kicker: 'Notice',
+    icon: 'megaphone',
+    summary: '活动节点、事务通知与正式声明',
+  },
 ];

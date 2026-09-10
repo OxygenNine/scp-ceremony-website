@@ -1,0 +1,219 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { ANNOUNCEMENTS, KIND_LABEL } from '../data/announcements';
+import { ArrowUpRight, ArrowRight, Quote } from '@lucide/astro';
+import { LINKS } from '../data/site';
+
+const facts = [
+  { label: '公告条数', value: `${ANNOUNCEMENTS.length} 条` },
+  { label: '最新', value: ANNOUNCEMENTS[0].label },
+];
+
+const sorted = [...ANNOUNCEMENTS].sort(
+  (a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || b.date.localeCompare(a.date)
+);
+---
+
+<BaseLayout
+  pageTitle="公告"
+  description="SCP 基金会中文分部 2027 新春会公告栏：活动节点、事务通知与主办方正式声明。"
+>
+  <PageHeader
+    kicker="Announcement"
+    title="公告栏"
+    lede="主办方已公开发布的公告都归档在这里。活动节点与事务通知按发布时间倒序；正式声明保留原话，不做改写。"
+    facts={facts}
+    mark="ceremony-2027"
+    texture="seigaiha"
+  />
+
+  <div class="shell">
+    <ol class="an">
+      {
+        sorted.map((a) => (
+          <li class="an__item" id={a.id}>
+            <div class="an__side">
+              <span class="an__date tnum">{a.label}</span>
+              <span class="an__kind">{KIND_LABEL[a.kind]}</span>
+              {a.pinned && <span class="an__pin">置顶</span>}
+            </div>
+
+            <div class="an__body">
+              <h2 class="an__title">{a.title}</h2>
+              {a.source && (
+                <p class="an__source">
+                  <Quote size={13} stroke-width={1.6} />
+                  {a.source}
+                </p>
+              )}
+
+              {a.body.map((p) => (
+                <p class="an__p">{p}</p>
+              ))}
+
+              {a.links && a.links.length > 0 && (
+                <div class="an__links">
+                  {a.links.map((l) =>
+                    l.external ? (
+                      <a class="an__link" href={l.url} target="_blank" rel="noopener noreferrer">
+                        {l.label}
+                        <ArrowUpRight size={12} stroke-width={1.8} />
+                      </a>
+                    ) : (
+                      <a class="an__link" href={l.url}>
+                        {l.label}
+                        <ArrowRight size={12} stroke-width={1.8} />
+                      </a>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <section class="ask">
+      <h2 class="ask__title">需要提问？</h2>
+      <p class="ask__body">
+        投稿、时长申请与其它特殊情况，请在 2027 新春会 QQ 群（{LINKS.qqGroup}）内联系主办方。私信不处理事务。
+      </p>
+      <button class="btn" type="button" data-copy-qq={LINKS.qqGroup}>复制群号</button>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .an {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .an__item {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: clamp(20px, 4vw, 56px);
+    padding: clamp(28px, 4vw, 48px) 0;
+    border-bottom: 1px solid var(--line);
+    scroll-margin-top: 24px;
+  }
+
+  .an__side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+  }
+
+  .an__date {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+  }
+
+  .an__kind {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    color: var(--fg-3);
+    padding: 2px 9px;
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-xs);
+  }
+
+  .an__pin {
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    color: var(--crimson-hi);
+  }
+
+  .an__title {
+    font-size: clamp(1.25rem, 2vw, 1.6rem);
+    margin-bottom: 14px;
+    max-width: 34ch;
+  }
+
+  .an__source {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 14px;
+    font-size: 0.74rem;
+    color: var(--gold-lo);
+    letter-spacing: 0.06em;
+  }
+
+  .an__p {
+    font-size: var(--step-small);
+    line-height: 2;
+    color: var(--fg-2);
+    max-width: 74ch;
+  }
+
+  .an__p + .an__p {
+    margin-top: 0.75em;
+  }
+
+  .an__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 20px;
+  }
+
+  .an__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    font-size: 0.74rem;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-xs);
+    transition: color var(--t), border-color var(--t);
+  }
+
+  .an__link:hover {
+    color: var(--gold-hi);
+    border-color: var(--line-3);
+  }
+
+  .ask {
+    margin-top: clamp(40px, 6vw, 72px);
+    padding: clamp(24px, 3vw, 36px);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--surface);
+  }
+
+  .ask__title {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
+
+  .ask__body {
+    font-size: var(--step-small);
+    line-height: 1.9;
+    color: var(--fg-2);
+    max-width: 68ch;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 760px) {
+    .an__item {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .an__side {
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+    }
+  }
+</style>

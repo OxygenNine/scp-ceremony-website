@@ -1,0 +1,134 @@
+---
+/**
+ * 正片里出现过、但站内无法给出播放地址的节目。
+ * 只陈述「找不到可跳转的投稿」这一事实，不评价作品本身。
+ */
+import { MISSING } from '../data/program';
+
+const REASON: Record<string, string> = {
+  'not-posted': '作者未单独投稿',
+  'no-account': '未找到对应账号',
+};
+
+const grouped = [
+  { key: 'not-posted', title: '作者有 B 站账号，但未发布该单品' },
+  { key: 'no-account', title: '未能找到对应账号或投稿' },
+] as const;
+---
+
+<div class="ml">
+  {
+    grouped.map((g) => {
+      const rows = MISSING.filter((m) => m.reason === g.key);
+      if (!rows.length) return null;
+      return (
+        <section class="ml__group">
+          <h3 class="ml__head">
+            {g.title}
+            <span class="ml__count tnum">{rows.length}</span>
+          </h3>
+          <ul class="ml__list">
+            {rows.map((m) => (
+              <li class="ml__item">
+                <span class="ml__author">{m.author}</span>
+                <span class="ml__title">{m.title}</span>
+                <span class="ml__tag">{REASON[m.reason]}</span>
+                {m.note && (
+                  <span class="ml__note">
+                    {m.note}
+                    {m.link && <a class="ml__link" href={m.link.href}>{m.link.label}</a>}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    })
+  }
+</div>
+
+<style>
+  .ml {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: clamp(20px, 3vw, 40px);
+    align-items: start;
+  }
+
+  .ml__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-text);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-2);
+  }
+
+  .ml__count {
+    font-size: 0.7rem;
+    color: var(--fg-3);
+    letter-spacing: 0.1em;
+  }
+
+  .ml__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ml__item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .ml__author {
+    font-size: 0.82rem;
+    color: var(--fg);
+    line-height: 1.5;
+  }
+
+  .ml__tag {
+    grid-row: 1;
+    grid-column: 2;
+    align-self: start;
+    font-size: 0.63rem;
+    letter-spacing: 0.08em;
+    color: var(--fg-4);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+
+  .ml__title {
+    grid-column: 1 / -1;
+    font-size: 0.78rem;
+    color: var(--fg-3);
+    line-height: 1.7;
+  }
+
+  .ml__note {
+    grid-column: 1 / -1;
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--gold-lo);
+  }
+
+  .ml__link {
+    margin-left: 8px;
+    color: var(--gold);
+    border-bottom: 1px solid var(--line-2);
+    transition: color var(--t), border-color var(--t);
+  }
+
+  .ml__link:hover {
+    color: var(--gold-hi);
+    border-color: var(--line-3);
+  }
+</style>

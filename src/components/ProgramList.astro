@@ -1,0 +1,270 @@
+---
+/**
+ * 2026 节目单。密集列表：缩略图 + 原始标题 + 作者 / 日期 / 播放量 / 时长。
+ * 标题逐字照搬 B 站，不做删改，最多两行截断。
+ */
+import { ArrowUpRight, Eye, ArrowRight } from '@lucide/astro';
+import { PROGRAM, coverOf } from '../data/program';
+import { duration, views, dotDate } from '../lib/format';
+
+/** 按播放量降序；同分时保持数据文件里的原始次序 */
+const rows = [...PROGRAM].sort((a, b) => b.views - a.views);
+
+const FLAG: Record<string, string> = {
+  collective: '多篇合并',
+  ai: 'AI 梗曲',
+};
+---
+
+<ol class="pl">
+  {
+    rows.map((item, i) => (
+      <li class="pl__row">
+        <span class="pl__no tnum">{String(i + 1).padStart(2, '0')}</span>
+
+        <a class="pl__thumb" href={item.url} target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+          <img src={coverOf(item.id)} alt="" width="320" height="200" loading="lazy" decoding="async" />
+        </a>
+
+        <div class="pl__main">
+          <h3 class="pl__title">
+            <a href={item.url} target="_blank" rel="noopener noreferrer">
+              {item.title}
+            </a>
+          </h3>
+
+          <p class="pl__meta">
+            <span class="pl__author">{item.author}</span>
+            {item.contributors?.map((c) => (
+              <span class="pl__author pl__author--extra">/ {c}</span>
+            ))}
+            <span class="pl__dot" aria-hidden="true" />
+            <span class="tnum">{dotDate(item.published)}</span>
+            <span class="pl__dot" aria-hidden="true" />
+            <span class="pl__stat tnum">
+              <Eye size={12} stroke-width={1.6} />
+              {views(item.views)}
+            </span>
+            <span class="pl__dot pl__dot--sm" aria-hidden="true" />
+            <span class="pl__dur tnum">{duration(item.duration)}</span>
+            {item.flag && <span class="pl__flag">{FLAG[item.flag]}</span>}
+          </p>
+
+          {item.note && <p class="pl__note">{item.note}</p>}
+
+          {item.extraLinks && item.extraLinks.length > 0 && (
+            <p class="pl__extra">
+              {item.extraLinks.map((l) => (
+                <a class="pl__extraLink" href={l.url} target="_blank" rel="noopener noreferrer">
+                  {l.label}
+                  <ArrowUpRight size={11} stroke-width={1.8} />
+                </a>
+              ))}
+            </p>
+          )}
+        </div>
+
+        <a class="pl__go" href={item.url} target="_blank" rel="noopener noreferrer" aria-label={`在 B 站观看：${item.title}`}>
+          <ArrowRight size={15} stroke-width={1.7} />
+        </a>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .pl {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .pl__row {
+    display: grid;
+    grid-template-columns: 46px 152px minmax(0, 1fr) 30px;
+    gap: 20px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    transition: background-color var(--t);
+  }
+
+  .pl__row:hover {
+    background: var(--surface);
+  }
+
+  .pl__no {
+    font-family: var(--font-display);
+    font-size: 0.86rem;
+    letter-spacing: 0.06em;
+    color: var(--fg-4);
+    text-align: right;
+    transition: color var(--t);
+  }
+
+  .pl__row:hover .pl__no {
+    color: var(--gold-lo);
+  }
+
+  .pl__thumb {
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--r-xs);
+    background: var(--bg);
+  }
+
+  .pl__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.85) brightness(0.88);
+    transition: filter var(--t);
+  }
+
+  .pl__row:hover .pl__thumb img {
+    filter: saturate(1) brightness(0.98);
+  }
+
+  /* 标题最多两行 */
+  .pl__title {
+    font-family: var(--font-display);
+    font-size: 1.04rem;
+    line-height: 1.42;
+    margin-bottom: 5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .pl__title a {
+    color: var(--fg);
+    transition: color var(--t);
+  }
+
+  .pl__row:hover .pl__title a {
+    color: var(--gold-hi);
+  }
+
+  .pl__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    font-size: 0.74rem;
+    color: var(--fg-3);
+    letter-spacing: 0.02em;
+  }
+
+  .pl__author {
+    color: var(--fg-2);
+  }
+
+  .pl__author--extra {
+    color: var(--fg-3);
+  }
+
+  .pl__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .pl__dot {
+    width: 2px;
+    height: 2px;
+    background: var(--fg-4);
+  }
+
+  .pl__flag {
+    margin-left: 2px;
+    padding: 1px 7px;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--gold-lo);
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-xs);
+  }
+
+  .pl__note {
+    margin-top: 8px;
+    font-size: 0.76rem;
+    line-height: 1.8;
+    color: var(--fg-3);
+    max-width: 82ch;
+    padding-left: 10px;
+    border-left: 1px solid var(--line-2);
+  }
+
+  .pl__extra {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 9px;
+  }
+
+  .pl__extraLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 9px;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+    border: 1px solid var(--line-2);
+    border-radius: var(--r-xs);
+    transition: color var(--t), border-color var(--t);
+  }
+
+  .pl__extraLink:hover {
+    color: var(--gold-hi);
+    border-color: var(--line-3);
+  }
+
+  .pl__go {
+    color: var(--fg-4);
+    transition: color var(--t);
+  }
+
+  .pl__row:hover .pl__go {
+    color: var(--gold);
+  }
+
+  .pl__go :global(svg) {
+    transition: transform var(--t);
+  }
+
+  .pl__row:hover .pl__go svg {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 760px) {
+    .pl__row {
+      grid-template-columns: 28px 104px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 16px 0;
+    }
+
+    .pl__no {
+      font-size: 0.76rem;
+      padding-top: 3px;
+    }
+
+    .pl__go {
+      display: none;
+    }
+
+    .pl__title {
+      font-size: 0.96rem;
+    }
+
+    .pl__dot--sm {
+      display: none;
+    }
+  }
+</style>

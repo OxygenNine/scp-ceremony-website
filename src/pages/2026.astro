@@ -3,27 +3,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import SectionHead from '../components/SectionHead.astro';
 import VideoCard from '../components/VideoCard.astro';
-import { FEATURE, OFFICIAL, PIECES, ARCHIVE_STATS } from '../data/videos';
-import { LINKS } from '../data/site';
+import ProgramList from '../components/ProgramList.astro';
+import MissingList from '../components/MissingList.astro';
+import { FEATURE, OFFICIAL, ARCHIVE_STATS } from '../data/videos';
+import { PROGRAM_STATS, HOSTS, MISSING } from '../data/program';
 import { durationText, views } from '../lib/format';
-import { ArrowRight, MonitorPlay } from '@lucide/astro';
+import { ArrowRight, MonitorPlay, Mic } from '@lucide/astro';
 
 const facts = [
   { label: '正片时长', value: durationText(ARCHIVE_STATS.featureDuration) },
   { label: 'B 站播放', value: views(ARCHIVE_STATS.featureViews) },
-  { label: '归档单品', value: `${ARCHIVE_STATS.pieceCount} 个` },
-  { label: '参与作者', value: `${ARCHIVE_STATS.contributors} 位` },
+  { label: '收录单品', value: `${PROGRAM_STATS.count} 个` },
+  { label: '参与作者', value: `${PROGRAM_STATS.contributors} 位` },
 ];
 ---
 
 <BaseLayout
   pageTitle="2026 回看"
-  description="SCP 基金会中文分部 2026 首届新春会正片、预告与单品归档，含 B 站播放地址。"
+  description="SCP 基金会中文分部 2026 首届新春会正片、官方物料与完整节目单，含 B 站播放地址。"
 >
   <PageHeader
     kicker="Archive · 2026"
     title="2026 首届新春会"
-    lede={`第一届新春会于 2026 年除夕上线，全长 ${durationText(ARCHIVE_STATS.featureDuration)}，在 B 站获得 ${views(ARCHIVE_STATS.featureViews)}播放。本页归档正片、官方预告与可考的单品作品，全部可直接跳转到 B 站观看。`}
+    lede={`第一届新春会于 2026 年除夕上线，全长 ${durationText(ARCHIVE_STATS.featureDuration)}，在 B 站获得 ${views(ARCHIVE_STATS.featureViews)}播放。本页归档正片、官方物料与主办方人工过片后确认的全部单品，可直接跳转到 B 站观看。`}
     facts={facts}
     mark="ceremony-2026"
     texture="asanoha"
@@ -61,26 +63,48 @@ const facts = [
     <section class="section">
       <SectionHead
         index="03"
-        kicker="Pieces"
-        title="单品归档"
-        note="收录标准：标题或简介中自行标注为「2026 新春会单品 / 节目」的作品。未自我标注的同期投稿一律不收录——宁可少收，也不误收。"
+        kicker="Programme"
+        title="节目单"
+        note={`主办方人工过片后确认的单品共 ${PROGRAM_STATS.count} 项，其中 2 项由多条投稿合并或多个版本组成。按 B 站播放量降序排列，仅为浏览方便。标题逐字照搬投稿原样。`}
       />
-
-      <div class="grid grid--4">
-        {PIECES.map((v) => <VideoCard video={v} />)}
-      </div>
-
-      <p class="note">
-        以上 {PIECES.length} 个作品均由创作者自行发布，版权归各自作者所有。部分作品在 B 站受到限流，直接搜索标题可能不易找到，建议通过站内链接进入。
-      </p>
+      <ProgramList />
     </section>
 
     <section class="section">
       <SectionHead
         index="04"
+        kicker="Unavailable"
+        title="没有单独投稿的节目"
+        note={`以下 ${MISSING.length} 个节目在正片中出现，但没有可跳转的单品地址——要么作者在 B 站有号却没单独发布，要么未能找到对应账号。列出它们是为了让节目单完整，不代表对作品的评价。`}
+      />
+      <MissingList />
+    </section>
+
+    <section class="section">
+      <SectionHead index="05" kicker="Hosts" title="主持人" note="2026 首届新春会的两位主持。" />
+      <ul class="hosts">
+        {
+          HOSTS.map((h) => (
+            <li class="hosts__item">
+              <span class="hosts__icon" aria-hidden="true">
+                <Mic size={16} stroke-width={1.5} />
+              </span>
+              <a class="hosts__name" href={h.url} target="_blank" rel="noopener noreferrer">
+                {h.name}
+              </a>
+              <span class="hosts__mid tnum">UID {h.mid}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section">
+      <SectionHead
+        index="06"
         kicker="Next"
         title="下一届"
-        note="2027 新春会的投稿通道开放至 2027 年 1 月 1 日 00:00。"
+        note="2027 新春会的报名开放至 2026 年 10 月 31 日 23:59，作品交稿截止 2027 年 1 月 1 日 00:00。"
       />
       <div class="next">
         <a class="next__card" href="/2027/">
@@ -110,24 +134,58 @@ const facts = [
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .grid--4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
   .act {
     margin-top: 22px;
   }
 
-  .note {
-    margin-top: 28px;
-    padding-top: 18px;
+  /* ---- 主持人 ---- */
+  .hosts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     border-top: 1px solid var(--line);
-    font-size: 0.78rem;
-    line-height: 1.9;
-    color: var(--fg-3);
-    max-width: 80ch;
+    border-left: 1px solid var(--line);
   }
 
+  .hosts__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 22px 20px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    transition: background-color var(--t);
+  }
+
+  .hosts__item:hover {
+    background: var(--surface);
+  }
+
+  .hosts__icon {
+    color: var(--gold);
+  }
+
+  .hosts__name {
+    font-family: var(--font-display);
+    font-size: 1.24rem;
+    color: var(--fg);
+    transition: color var(--t);
+  }
+
+  .hosts__item:hover .hosts__name {
+    color: var(--gold-hi);
+  }
+
+  .hosts__mid {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--fg-4);
+    letter-spacing: 0.06em;
+  }
+
+  /* ---- 下一届 ---- */
   .next {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -171,26 +229,16 @@ const facts = [
     line-height: 1.8;
   }
 
-  @media (max-width: 1080px) {
-    .grid--4 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
   @media (max-width: 900px) {
     .grid--3,
-    .grid--4 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     .next {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 620px) {
     .grid--3,
-    .grid--4 {
+    .next {
       grid-template-columns: 1fr;
     }
   }

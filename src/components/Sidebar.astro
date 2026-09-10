@@ -1,5 +1,5 @@
 ---
-import { House, Archive, Hourglass, FilePen, Users, MonitorPlay } from '@lucide/astro';
+import { House, Archive, Hourglass, FilePen, Megaphone, Users, MonitorPlay } from '@lucide/astro';
 import BrandMark from './BrandMark.astro';
 import { NAV, LINKS } from '../data/site';
 
@@ -8,6 +8,7 @@ const ICONS = {
   archive: Archive,
   hourglass: Hourglass,
   'file-pen': FilePen,
+  megaphone: Megaphone,
 } as const;
 
 /** 归一化路径：/2026、/2026/ 、/2026/index.html 都视为同一页 */

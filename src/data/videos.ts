@@ -4,6 +4,8 @@
  * 节目单品清单见 `program.ts`。
  */
 
+import { PROGRAM } from './program';
+
 export type Video = {
   bvid: string;
   title: string;
@@ -92,5 +94,8 @@ export const OFFICIAL: Video[] = [
 export const ARCHIVE_STATS = {
   featureDuration: FEATURE.duration,
   featureViews: FEATURE.views,
+  /** 已归档单品总数：节目单单品（program.ts）＋ 特别环节（新春贺词） */
+  pieceCount:
+    PROGRAM.length + OFFICIAL.filter((v) => v.kind === '特别环节').length,
   fetchedAt: '2026-09-11',
 } as const;

@@ -483,6 +483,12 @@ export const MISSING: MissingItem[] = [
     note: '经核实为抄袭作品，作者已改署为 MAKU_050。',
     link: { label: '查看处理声明', href: `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/announcement/#2026-plagiarism` },
   },
+  {
+    author: 'Bookshelf书架',
+    title: '人机验证',
+    reason: 'not-posted',
+    note: '作为过场动画的特殊单品。'
+  }
 ];
 
 /** 2026 首届新春会主持人。 */

@@ -4,6 +4,29 @@
 
 技术栈：**Astro 7**（静态输出）+ **@lucide/astro**（图标）+ 手写 CSS。
 
+## 部署
+
+站点发布在 GitHub Pages：**https://oxygennine.github.io/scp-ceremony-website/**
+
+推送到 `main` 即自动构建部署（`.github/workflows/deploy.yml`，用官方 `withastro/action`）。
+
+**首次在新仓库部署前，必须先手动启用 Pages** —— Settings → Pages →
+Build and deployment → **Source 选「GitHub Actions」**。
+不启用的话 `withastro/action` 内部的 `configure-pages` 会以「Get Pages site failed」中止，
+现象是 build 步骤直接失败。用 `configure-pages` 的 `enablement: true` 自举在本仓库会被拒（实测返回 404），
+所以这一步只能手动做。
+
+站点在 `/scp-ceremony-website` 子路径下，`astro.config.mjs` 里配了 `base`。
+**改代码时注意 base 不会自动生效的三处**：
+
+| 场景 | 处理 |
+|---|---|
+| 页面里手写的 `href="/join/"` | 用 `site.ts` 的 `href('join/')` 包一层 |
+| 运行时拼出的资源路径（封面、favicon） | 用 `site.ts` 的 `asset()` / `coverOf()` |
+| 需要拿 pathname 做判断（如侧栏高亮） | 两边都先剥掉 `BASE_URL` 前缀再比 |
+
+回归脚本第二个参数就是 base 前缀，可用它在本地复现 Pages 子路径环境（见下）。
+
 ## 开发
 
 ```bash
@@ -17,6 +40,16 @@ npm run preview
 > 字体 CDN（ZeoSeven Fonts）会拒绝字面 IP 来源的请求并返回 204 空样式表，导致字体全部静默回退且控制台不报错。
 > `BaseLayout.astro` 里已经用 `<meta name="referrer" content="no-referrer">` 把 Referer 去掉，两种主机名下表现一致。
 > 如果改动 head 时删掉了这一行，`127.0.0.1` 下字体会掉回系统字体。
+
+**按线上子路径本地验证**（推荐改完涉及链接/资源的改动后跑一遍）：
+
+```bash
+mkdir -p /tmp/pages-root/scp-ceremony-website
+cp -r dist/. /tmp/pages-root/scp-ceremony-website/
+cd /tmp/pages-root && python -m http.server 4399
+# 另开一个终端：
+python .workbuddy/scripts/e2e_check.py http://localhost:4399 /scp-ceremony-website
+```
 
 ## 目录
 

@@ -55,7 +55,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
       '报名截止 2026 年 10 月 31 日 23:59，作品交稿截止 2027 年 1 月 1 日 00:00。这是两个独立的截止点——先登记，后交稿。',
       '本届计划收录约 30 ~ 35 个节目（不含开场混剪与新春贺词）。',
     ],
-    links: [{ label: '查看投稿要求', url: '/join/' }],
+    links: [{ label: '查看投稿要求', url: `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/join/` }],
     pinned: true,
   },
   {

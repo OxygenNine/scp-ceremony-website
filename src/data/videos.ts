@@ -26,7 +26,9 @@ export type Video = {
   featured?: boolean;
 };
 
-const cdn = (bvid: string) => `/covers/${bvid}.jpg`;
+/** 封面统一从 public/covers 取。带 BASE_URL 前缀，兼容 GitHub Pages 的子路径部署。 */
+const cdn = (bvid: string) =>
+  `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/covers/${bvid}.jpg`;
 const bili = (bvid: string) => `https://www.bilibili.com/video/${bvid}`;
 
 /** 正片 */

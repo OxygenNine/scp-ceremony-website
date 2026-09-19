@@ -8,6 +8,7 @@ import MissingList from '../components/MissingList.astro';
 import { FEATURE, OFFICIAL, ARCHIVE_STATS } from '../data/videos';
 import { PROGRAM_STATS, HOSTS, MISSING } from '../data/program';
 import { durationText, views } from '../lib/format';
+import { href } from '../data/site';
 import { ArrowRight, MonitorPlay, Mic } from '@lucide/astro';
 
 const facts = [
@@ -107,13 +108,13 @@ const facts = [
         note="2027 新春会的报名开放至 2026 年 10 月 31 日 23:59，作品交稿截止 2027 年 1 月 1 日 00:00。"
       />
       <div class="next">
-        <a class="next__card" href="/2027/">
+        <a class="next__card" href={href('2027/')}>
           <span class="micro">2027 筹备</span>
           <span class="next__title">查看本届进度</span>
           <span class="next__body">时间轴、主办方与倒计时。</span>
           <ArrowRight size={16} stroke-width={1.6} />
         </a>
-        <a class="next__card" href="/join/">
+        <a class="next__card" href={href('join/')}>
           <span class="micro">投稿参与</span>
           <span class="next__title">查看投稿要求</span>
           <span class="next__body">交付格式、内容红线、节目类型与时长。</span>

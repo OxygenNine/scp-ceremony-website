@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import Sidebar from '../components/Sidebar.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { SITE } from '../data/site';
+import { SITE, asset } from '../data/site';
 
 interface Props {
   title?: string;
@@ -38,7 +38,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <meta property="og:description" content={description} />
     <meta property="og:locale" content="zh_CN" />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={asset('favicon.svg')} />
 
     <!--
       字体 CDN（ZeoSeven Fonts）会对字面 IP 来源直接返回 204 空样式表，

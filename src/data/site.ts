@@ -26,13 +26,23 @@ export const SUBMISSION_DEADLINE = '2027-01-01T00:00:00+08:00';
 /** 上一届（2026）正片首播日期。 */
 export const EDITION_2026_RELEASE = '2026-02-16';
 
+/**
+ * `import.meta.env.BASE_URL` 不带结尾斜杠（如 `/scp-ceremony-website`），
+ * 直接拼相对路径会粘成一坨（`/scp-ceremony-websiteimages/x.jpg`）。
+ * 统一走这个归一化到根、末尾必带斜杠的常量。
+ */
+const BASE = `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/`;
+
+/** public/ 下的静态资源路径。写死 '/' 会在子路径部署时 404。 */
+export const asset = (path: string) => `${BASE}${path.replace(/^\/+/, '')}`;
+
 /** 2027 新春会宣传 PV。 */
 export const PV = {
   bvid: 'BV1ssYu6XEWC',
   url: 'https://www.bilibili.com/video/BV1ssYu6XEWC/',
   title: '2027 新春会宣传 PV',
-  cover: '/images/pv-2027.jpg',
-  coverSmall: '/images/pv-2027-960.jpg',
+  cover: asset('images/pv-2027.jpg'),
+  coverSmall: asset('images/pv-2027-960.jpg'),
   /** 首播时刻 */
   publishedAt: '2026-09-11T18:00:00+08:00',
   /** 展示用 */
@@ -52,6 +62,17 @@ export const LINKS = {
   },
 } as const;
 
+/**
+ * 站内页面链接前缀。
+ * Astro 的 `base` 只自动作用于 `Astro.url` 与打包期发现的资源引用，
+ * 手写的 `href="/join/"` 不会被改写——子路径部署时会直接跳到站点根、404。
+ * 所有站内链接都要走这里拼。
+ */
+export const href = (path: string) => {
+  const p = path.replace(/^\/+/, '');
+  return p ? `${BASE}${p}` : BASE;
+};
+
 export type NavItem = {
   href: string;
   label: string;
@@ -63,35 +84,35 @@ export type NavItem = {
 
 export const NAV: NavItem[] = [
   {
-    href: '/',
+    href: href(''),
     label: '首页',
     kicker: 'Index',
     icon: 'house',
     summary: '新春会简介与本届概览',
   },
   {
-    href: '/2026/',
+    href: href('2026/'),
     label: '2026 回看',
     kicker: 'Archive',
     icon: 'archive',
     summary: '首届正片、预告与单品归档',
   },
   {
-    href: '/2027/',
+    href: href('2027/'),
     label: '2027 筹备',
     kicker: 'In Progress',
     icon: 'hourglass',
     summary: '倒计时、时间轴与主办方',
   },
   {
-    href: '/join/',
+    href: href('join/'),
     label: '投稿参与',
     kicker: 'Submission',
     icon: 'file-pen',
     summary: '报名方式与投稿要求',
   },
   {
-    href: '/announcement/',
+    href: href('announcement/'),
     label: '公告',
     kicker: 'Notice',
     icon: 'megaphone',

@@ -10,8 +10,14 @@
 
 const BILI = 'https://www.bilibili.com/video/';
 
-/** 封面统一按 id 从 public/covers 取 */
-export const coverOf = (id: string) => `/covers/${id}.jpg`;
+/**
+ * 封面统一按 id 从 public/covers 取。
+ * 前缀用 BASE_URL 而非写死 '/'：站点部署在 GitHub Pages 的项目子路径下
+ * （/scp-ceremony-website/），写死根路径会让缩略图全部 404。
+ * BASE_URL 不带结尾斜杠，这里补上再拼。
+ */
+export const coverOf = (id: string) =>
+  `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/covers/${id}.jpg`;
 
 export type ProgramItem = {
   id: string;
@@ -475,7 +481,7 @@ export const MISSING: MissingItem[] = [
     title: '机动特遣队·乡里愚人×为什么',
     reason: 'not-posted',
     note: '经核实为抄袭作品，作者已改署为 MAKU_050。',
-    link: { label: '查看处理声明', href: '/announcement/#2026-plagiarism' },
+    link: { label: '查看处理声明', href: `${import.meta.env.BASE_URL.replace(/\/+$/, '')}/announcement/#2026-plagiarism` },
   },
 ];
 

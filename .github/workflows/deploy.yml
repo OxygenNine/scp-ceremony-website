@@ -1,0 +1,42 @@
+name: Deploy to GitHub Pages
+
+on:
+  # 推送到 main 分支时自动部署
+  push:
+    branches: [main]
+  # 允许在 Actions 标签页手动触发
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只保留一个部署；排队中的旧任务作废，正在跑的不打断
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v5
+
+      - name: Install, build, and upload your site
+        uses: withastro/action@v5
+        with:
+          # Astro 7 要求 Node >= 22.12.0，action 默认的 20 会构建失败
+          node-version: 22
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -10,7 +10,7 @@ import { FEATURE, ARCHIVE_STATS } from '../data/videos';
 import { PROGRAM_STATS, MISSING, HOSTS } from '../data/program';
 import { PRODUCTION } from '../data/team';
 import { SUBMISSION_FACTS } from '../data/submission';
-import { LINKS, SITE } from '../data/site';
+import { href, LINKS, SITE } from '../data/site';
 import { durationText, views } from '../lib/format';
 
 const stats = [
@@ -35,7 +35,7 @@ const entries = [
     body: '交付格式、内容红线、节目类型与时长限制，逐条来自本届企划书。',
     action: 'link' as const,
     label: '前往投稿页',
-    href: '/join/',
+    href: href('join/'),
   },
   {
     icon: MonitorPlay,
@@ -53,9 +53,9 @@ const entries = [
   <Hero
     eyebrow="第二届 · 筹备中"
     lede="由 SCP 基金会中文分部社群创作者共同制作的年度合作企划。手书、音乐、小剧场、混剪——统一剪辑成一场完整的线上放映，在除夕当天上线。本届报名自 2026 年 9 月 11 日开放，10 月 31 日 23:59 截止；作品交稿截止 2027 年 1 月 1 日。"
-    primaryHref="/join/"
+    primaryHref={href('join/')}
     primaryLabel="参与投稿"
-    secondaryHref="/2026/"
+    secondaryHref={href('2026/')}
     secondaryLabel="回看 2026"
   />
 
@@ -130,7 +130,7 @@ const entries = [
       </dl>
 
       <p class="more">
-        <a class="golink" href="/2026/">
+        <a class="golink" href={href('2026/')}>
           查看 2026 完整节目单
           <ArrowRight size={14} stroke-width={1.8} />
         </a>
@@ -147,7 +147,7 @@ const entries = [
       />
       <Timeline compact />
       <p class="more">
-        <a class="golink" href="/2027/">
+        <a class="golink" href={href('2027/')}>
           查看完整筹备进度
           <ArrowRight size={14} stroke-width={1.8} />
         </a>

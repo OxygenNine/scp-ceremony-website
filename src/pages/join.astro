@@ -15,7 +15,7 @@ import {
   NOTES,
   SUBMISSION_FACTS,
 } from '../data/submission';
-import { LINKS } from '../data/site';
+import { href, LINKS } from '../data/site';
 
 const facts = SUBMISSION_FACTS.map((f) => ({ label: `${f.label}（${f.hint}）`, value: f.value }));
 
@@ -179,7 +179,7 @@ const toc = [
       </div>
 
       <p class="more">
-        <a class="golink" href="/2027/">
+        <a class="golink" href={href('2027/')}>
           返回 2027 筹备页
           <ArrowRight size={14} stroke-width={1.8} />
         </a>

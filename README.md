@@ -48,7 +48,7 @@ public/
 | `program.ts` | **2026 完整节目单**（43 项）、未归档节目清单、主持人 |
 | `announcements.ts` | 公告栏条目 |
 | `schedule.ts` | 2027 时间轴节点与状态推导 |
-| `team.ts` | 主办方分工、吉祥物、制作规模 |
+| `team.ts` | 主办方分工、制作规模（吉祥物形象完成后补回） |
 | `submission.ts` | 报名流程、交付 / 内容 / 时长 / 质量要求、拒收情形 |
 
 **节目单的两条约定：**
@@ -64,6 +64,10 @@ public/
 - 宣传 PV：`src/data/site.ts` 的 `PV`（BVID、封面路径、首播时刻）
 - 时间轴节点：`src/data/schedule.ts` 的 `MILESTONES`；节点状态由 `statusOf()` 按当前日期自动推导，无需手改
 - 观看地址：`src/pages/2027.astro` 顶部的 `slots` 数组，占位卡替换为真实链接即可
+
+**更换主视觉标识：** 把主办方原件放进 `src/assets/logos/`，用 `.workbuddy/scripts/prep_logo.py`
+过一遍再内联——脚本会剥掉硬编码填充色（颜色须由 CSS 的 `currentColor` 接管）并给 id 加命名空间前缀，
+避免同页多个内联 SVG 互相串用。
 
 **数字不要手写。** 播放量、时长这类会变的值走 `src/lib/format.ts` 的 `views()` / `durationText()`，
 散落在文案里的硬编码数字迟早和统计卡对不上。

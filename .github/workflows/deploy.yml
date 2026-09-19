@@ -24,6 +24,15 @@ jobs:
       - name: Checkout your repository using git
         uses: actions/checkout@v5
 
+      # 首次运行时仓库还没开 Pages，withastro/action 内部的 configure-pages
+      # 会以「Get Pages site failed」中止。这一行让 action 自己把 Pages 站点建起来，
+      # 省掉去 Settings → Pages 手动切 Source 的那一步。
+      # 若已被组织策略锁死而仍失败，再走一次手动设置即可。
+      - name: Enable GitHub Pages if not configured yet
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - name: Install, build, and upload your site
         uses: withastro/action@v5
         with:

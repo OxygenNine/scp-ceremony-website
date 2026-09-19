@@ -24,12 +24,18 @@ jobs:
       - name: Checkout your repository using git
         uses: actions/checkout@v5
 
-      # ⚠️ 前置条件：仓库必须先启用 Pages —— Settings → Pages →
-      # Build and deployment → Source 选「GitHub Actions」。
-      # 未启用时 withastro/action 内部的 configure-pages 会以
-      # 「Get Pages site failed」中止（现象是 build 步骤直接失败）。
-      # 实测 configure-pages 的 enablement: true 在本仓库会被拒（仓库返回 404），
-      # 所以这一步只能手动做，不要靠 workflow 自举。
+          # ⚠️ 前置条件：仓库必须先启用 Pages —— Settings → Pages →
+          # Build and deployment → Source 选「GitHub Actions」。
+          # 未启用时 withastro/action 内部的 configure-pages 会以
+          # 「Get Pages site failed」中止（现象是 build 步骤直接失败）。
+          # 实测 configure-pages 的 enablement: true 在本仓库会被拒（仓库返回 404），
+          # 所以这一步只能手动做，不要靠 workflow 自举。
+          #
+          # ⚠️ 另外：不要从 Settings → Pages 里选「Static HTML」。
+          # 那个选项会让 GitHub 往本目录塞一个 static.yml（actions/upload-pages-artifact
+          # 的 path 写死成 '.'），把整个仓库源码当成站点发布，并覆盖本工作流的部署。
+          # 两个工作流都报 success，谁最后跑完谁生效 —— 结果是源码公开、站点 404。
+          # 已在 2026-09-19 踩过，回归脚本第 0 节加了守卫。
 
       - name: Install, build, and upload your site
         uses: withastro/action@v5

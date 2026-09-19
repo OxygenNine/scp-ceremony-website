@@ -27,6 +27,12 @@ Build and deployment → **Source 选「GitHub Actions」**。
 
 回归脚本第二个参数就是 base 前缀，可用它在本地复现 Pages 子路径环境（见下）。
 
+> **不要从 Settings → Pages 里选「Static HTML」。**
+> 那个选项会让 GitHub 自动生成一个 `static.yml`，把整个仓库源码当作站点发布，
+> 并覆盖 `deploy.yml` 的部署结果（两个工作流都报 success，谁最后跑完谁生效）。
+> 2026-09-19 踩过一次：站点 404，`.gitignore` / `astro.config.mjs` / `src/**` 却全部可访问。
+> 回归脚本第 0 节已加守卫，出现第二个含 `path: '.'` 的工作流会直接报错。
+
 ## 开发
 
 ```bash
